@@ -13,6 +13,7 @@
 		EF90579C242BA6390027ACC5 /* FeedLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF90579B242BA6390027ACC5 /* FeedLoader.swift */; };
 		EF90579E242CA6980027ACC5 /* RemoteFeedLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF90579D242CA6980027ACC5 /* RemoteFeedLoader.swift */; };
 		EF9057A0242D21320027ACC5 /* HTTPClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF90579F242D21320027ACC5 /* HTTPClient.swift */; };
+		EF9057A4242D21B00027ACC5 /* FeedItemsMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF9057A3242D21B00027ACC5 /* FeedItemsMapper.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -35,6 +36,7 @@
 		EF90579B242BA6390027ACC5 /* FeedLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedLoader.swift; sourceTree = "<group>"; };
 		EF90579D242CA6980027ACC5 /* RemoteFeedLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoteFeedLoader.swift; sourceTree = "<group>"; };
 		EF90579F242D21320027ACC5 /* HTTPClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HTTPClient.swift; sourceTree = "<group>"; };
+		EF9057A3242D21B00027ACC5 /* FeedItemsMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedItemsMapper.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -77,6 +79,7 @@
 		EF905781242BA50B0027ACC5 /* FeedFramework */ = {
 			isa = PBXGroup;
 			children = (
+				EF9057A2242D21870027ACC5 /* FeedFeature */,
 				EF9057A1242D213C0027ACC5 /* FeedAPI */,
 				EF905783242BA50B0027ACC5 /* Info.plist */,
 				EF905799242BA54E0027ACC5 /* FeedItem.swift */,
@@ -101,6 +104,14 @@
 				EF90579F242D21320027ACC5 /* HTTPClient.swift */,
 			);
 			path = FeedAPI;
+			sourceTree = "<group>";
+		};
+		EF9057A2242D21870027ACC5 /* FeedFeature */ = {
+			isa = PBXGroup;
+			children = (
+				EF9057A3242D21B00027ACC5 /* FeedItemsMapper.swift */,
+			);
+			path = FeedFeature;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -212,6 +223,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				EF9057A4242D21B00027ACC5 /* FeedItemsMapper.swift in Sources */,
 				EF90579C242BA6390027ACC5 /* FeedLoader.swift in Sources */,
 				EF90579E242CA6980027ACC5 /* RemoteFeedLoader.swift in Sources */,
 				EF9057A0242D21320027ACC5 /* HTTPClient.swift in Sources */,
