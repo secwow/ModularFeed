@@ -8,18 +8,13 @@
 
 import Foundation
 
-public enum HTTPClientResult {
-    case success(Data, HTTPURLResponse)
-    case failure(Error)
-}
 
-public protocol HTTPClient {
-    func get(from url: URL, completion: @escaping (HTTPClientResult) -> ())
-}
 
 public final class RemoteFeedLoader {
     private let requestedURL: URL
     private let httpClient: HTTPClient
+    
+    static var OK_200: Int { return 200 }
     
     public enum Error: Swift.Error {
         case connectivity, invalidData
@@ -54,7 +49,7 @@ public final class RemoteFeedLoader {
 
 private class FeedItemsMapper {
     static func map(_ data: Data, _ response: HTTPURLResponse) throws -> [FeedItem]  {
-        guard response.statusCode == 200 else {
+        guard response.statusCode == RemoteFeedLoader.OK_200 else {
             throw RemoteFeedLoader.Error.invalidData
         }
         return try JSONDecoder().decode(FeedItems.self, from: data).items.map({$0.item})
