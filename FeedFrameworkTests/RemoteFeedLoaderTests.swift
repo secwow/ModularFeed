@@ -34,8 +34,8 @@ class RemoteFeedLoaderTests: XCTestCase {
         let (loader, client) = sut()
         
         expect(loader, toCompleteWithError: .connectivity, when: {
-              let error = NSError(domain: "", code: 0)
-              client.complete(with: error)
+            let error = NSError(domain: "", code: 0)
+            client.complete(with: error)
         })
     }
     
@@ -45,7 +45,7 @@ class RemoteFeedLoaderTests: XCTestCase {
         
         [199, 200, 201, 300, 400, 500].enumerated().forEach { (index, code) in
             expect(loader, toCompleteWithError: .invalidData, when: {
-               client.complete(withStatusCode: code, at: index)
+                client.complete(withStatusCode: code, at: index)
             })
         }
     }
@@ -54,14 +54,19 @@ class RemoteFeedLoaderTests: XCTestCase {
         let (loader, client) = sut()
         
         expect(loader, toCompleteWithError: .invalidData, when: {
-           let invalidJSON = Data("Data".utf8)
-           client.complete(withStatusCode: 200, data: invalidJSON)
+            let invalidJSON = Data("Data".utf8)
+            client.complete(withStatusCode: 200, data: invalidJSON)
         })
     }
     
-//    func test_load_deliversNoItemsOn200ResponseWithEmptyJSONList() {
-//         let (loader, client) = sut()
-//    }
+    func test_load_deliversNoItemsOn200ResponseWithEmptyJSONList() {
+        let (loader, client) = sut()
+        var capturedResults = [RemoteFeedLoader.Result]()
+        loader.load(completion: {capturedResults.append($0)})
+        let emptyListJSON = Data("{\"items\": []}".utf8)
+        client.complete(withStatusCode: 200, data: emptyListJSON)
+        XCTAssertEqual(capturedResults, [.success([])])
+    }
     
     private func expect(_ sut: RemoteFeedLoader,
                         toCompleteWithError error: RemoteFeedLoader.Error,
