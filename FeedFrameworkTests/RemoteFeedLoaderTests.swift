@@ -10,24 +10,36 @@ import XCTest
 import FeedFramework
 
 class HTTPClientSpy: HTTPClient {
-    var requestedURL: URL?
+    var requestedURLs: [URL] = []
+    var lastRequestedURL: URL? {
+        return requestedURLs.last
+    }
+    var requestCount: Int = 0
     
     func get(from url: URL) {
-        self.requestedURL = url
+        requestedURLs.append(url)
     }
 }
 
 class RemoteFeedLoaderTests: XCTestCase {
-    func init_clientDoesNotRequestURL() {
+    func test_init_clientDoesNotRequestDataFromURL() {
            let (_, client) = sut()
-           XCTAssertNil(client.requestedURL)
+           XCTAssertNil(client.lastRequestedURL)
        }
     
-    func init_clientRequestsURL() {
+    func test_load_clientRequestsDataFromURL() {
         let url = URL(string: "http://some-url.com")!
         let (loader, client) = sut(url: url)
         loader.load()
-        XCTAssertEqual(client.requestedURL, url)
+        XCTAssertEqual(client.lastRequestedURL, url)
+    }
+    
+    func test_loadTwice_clientRequestsDataFromURL() {
+        let url = URL(string: "http://some-url.com")!
+        let (loader, client) = sut(url: url)
+        loader.load()
+        loader.load()
+        XCTAssertEqual(client.requestedURLs, [url, url])
     }
     
     func sut(url: URL =  URL(string: "http://some-url.com")!) -> (RemoteFeedLoader, HTTPClientSpy) {
