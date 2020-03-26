@@ -13,7 +13,7 @@ public final class RemoteFeedLoader {
     private let httpClient: HTTPClient
     
     public enum Error: Swift.Error {
-        case connectivity
+        case connectivity, invalidData
     }
     
     public init(requestedURL: URL, httpClient: HTTPClient) {
@@ -22,12 +22,17 @@ public final class RemoteFeedLoader {
     }
     
     public func load(completion: @escaping (Error?) -> ()) {
-        self.httpClient.get(from: requestedURL) {error in
-            completion(.connectivity)
+        self.httpClient.get(from: requestedURL) { error, response in
+            if response != nil {
+                completion(.invalidData)
+            } else {
+                completion(.connectivity)
+            }
+            
         }
     }
 }
 
 public protocol HTTPClient {
-    func get(from url: URL, completion: @escaping (Error?) -> ())
+    func get(from url: URL, completion: @escaping (Error?, HTTPURLResponse?) -> ())
 }
