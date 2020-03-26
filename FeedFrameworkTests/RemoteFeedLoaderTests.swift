@@ -10,14 +10,15 @@ import XCTest
 import FeedFramework
 
 class HTTPClientSpy: HTTPClient {
+    
     var requestedURLs: [URL] = []
-    var lastRequestedURL: URL? {
-        return requestedURLs.last
-    }
+    
+    var error: Error?
     var requestCount: Int = 0
     
-    func get(from url: URL) {
+    func get(from url: URL, completion: (Error?) -> ()) {
         requestedURLs.append(url)
+        completion(error)
     }
 }
 
@@ -40,6 +41,17 @@ class RemoteFeedLoaderTests: XCTestCase {
         loader.load()
         loader.load()
         XCTAssertEqual(client.requestedURLs, [url, url])
+    }
+    
+    func test_load_deliversErrorOnClient() {
+        let (loader, client) = sut()
+        client.error = NSError(domain: "", code: 405)
+        var capturedError: RemoteFeedLoader.Error?
+        loader.load() { error in
+           capturedError = error
+        }
+        
+        XCTAssertEqual(capturedError, .connectivity)
     }
     
     func sut(url: URL =  URL(string: "http://some-url.com")!) -> (RemoteFeedLoader, HTTPClientSpy) {
