@@ -14,7 +14,7 @@ public final class RemoteFeedLoader {
     private let requestedURL: URL
     private let httpClient: HTTPClient
     
-
+    
     
     public enum Error: Swift.Error {
         case connectivity, invalidData
@@ -34,12 +34,7 @@ public final class RemoteFeedLoader {
         self.httpClient.get(from: requestedURL) { result in
             switch result {
             case let .success(data, response):
-                do {
-                    let items = try FeedItemsMapper.map(data, response)
-                    completion(.success(items))
-                } catch {
-                    completion(.failure(.invalidData))
-                }
+                completion(FeedItemsMapper.map(data, response))
             case .failure(_):
                 completion(.failure(.connectivity))
             }

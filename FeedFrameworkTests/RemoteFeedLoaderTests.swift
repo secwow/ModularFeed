@@ -10,6 +10,8 @@ import XCTest
 import FeedFramework
 
 class RemoteFeedLoaderTests: XCTestCase {
+    var leakDetector: RemoteFeedLoader?
+    
     func test_init_clientDoesNotRequestDataFromURL() {
         let (_, client) = sut()
         XCTAssertTrue(client.requestedURLs.isEmpty)
@@ -71,14 +73,14 @@ class RemoteFeedLoaderTests: XCTestCase {
     func test_load_deliversItemsOn200ResponseWithValidJSON() {
         let (loader, client) = sut()
         let item1 = makeItem(id: UUID(),
-                                description: nil,
-                                location: nil,
-                                imageURL: URL(string: "http://image.url")!)
-
+                             description: nil,
+                             location: nil,
+                             imageURL: URL(string: "http://image.url")!)
+        
         let item2 = makeItem(id: UUID(),
-                                 description: "desc",
-                                 location: "descip",
-                                 imageURL: URL(string: "http://image-fd.url")!)
+                             description: "desc",
+                             location: "descip",
+                             imageURL: URL(string: "http://image-fd.url")!)
         
         
         expect(loader, toCompleteWithResult: .success([item1.model, item2.model]), when: {
@@ -119,10 +121,24 @@ class RemoteFeedLoaderTests: XCTestCase {
         XCTAssertEqual(capturedResults, [result], file: file, line: line)
     }
     
-    private func sut(url: URL =  URL(string: "http://some-url.com")!) -> (RemoteFeedLoader, HTTPClientSpy) {
+    private func sut(url: URL =  URL(string: "http://some-url.com")!,
+                     file: StaticString = #file,
+                     line: UInt = #line) -> (RemoteFeedLoader, HTTPClientSpy) {
         let client = HTTPClientSpy()
         let loader = RemoteFeedLoader(requestedURL: url, httpClient: client)
+        trackForMemoryLead(object: client)
+        trackForMemoryLead(object: loader)
+        
+        
         return (loader, client)
+    }
+    
+    private func trackForMemoryLead(object: AnyObject,
+                                    file:StaticString = #file,
+                                    line: UInt = #line) {
+        addTeardownBlock { [weak object] in
+            XCTAssertNil(object, "Instance should have been deallocated", file: file, line: line)
+        }
     }
 }
 
