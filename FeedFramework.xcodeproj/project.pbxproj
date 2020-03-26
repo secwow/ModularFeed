@@ -92,7 +92,7 @@
 		EF90578C242BA50B0027ACC5 /* FeedFrameworkTests */ = {
 			isa = PBXGroup;
 			children = (
-				EF90578D242BA50B0027ACC5 /* RemoteFeedLoaderTests.swift */,
+				EF9057A5242D28E60027ACC5 /* FeedAPI */,
 				EF90578F242BA50B0027ACC5 /* Info.plist */,
 			);
 			path = FeedFrameworkTests;
@@ -112,6 +112,14 @@
 				EF9057A3242D21B00027ACC5 /* FeedItemsMapper.swift */,
 			);
 			path = FeedFeature;
+			sourceTree = "<group>";
+		};
+		EF9057A5242D28E60027ACC5 /* FeedAPI */ = {
+			isa = PBXGroup;
+			children = (
+				EF90578D242BA50B0027ACC5 /* RemoteFeedLoaderTests.swift */,
+			);
+			path = FeedAPI;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
