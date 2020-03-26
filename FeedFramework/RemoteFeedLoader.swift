@@ -13,6 +13,10 @@ public enum HTTPClientResult {
     case failure(Error)
 }
 
+public protocol HTTPClient {
+    func get(from url: URL, completion: @escaping (HTTPClientResult) -> ())
+}
+
 public final class RemoteFeedLoader {
     private let requestedURL: URL
     private let httpClient: HTTPClient
@@ -37,6 +41,7 @@ public final class RemoteFeedLoader {
             case let .success(data, _):
                 if let _ = try? JSONSerialization.jsonObject(with: data) {
                     completion(.success([]))
+                    return
                 }
                 completion(.failure(.invalidData))
             case .failure(_):
@@ -46,6 +51,4 @@ public final class RemoteFeedLoader {
     }
 }
 
-public protocol HTTPClient {
-    func get(from url: URL, completion: @escaping (HTTPClientResult) -> ())
-}
+
