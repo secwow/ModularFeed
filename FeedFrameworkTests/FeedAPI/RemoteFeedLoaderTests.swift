@@ -153,19 +153,11 @@ class RemoteFeedLoaderTests: XCTestCase {
                      line: UInt = #line) -> (RemoteFeedLoader, HTTPClientSpy) {
         let client = HTTPClientSpy()
         let loader = RemoteFeedLoader(requestedURL: url, httpClient: client)
-        trackForMemoryLead(object: client)
-        trackForMemoryLead(object: loader)
+        self.trackForMemoryLeak(object: client)
+        self.trackForMemoryLeak(object: loader)
         
         
         return (loader, client)
-    }
-    
-    private func trackForMemoryLead(object: AnyObject,
-                                    file:StaticString = #file,
-                                    line: UInt = #line) {
-        addTeardownBlock { [weak object] in
-            XCTAssertNil(object, "Instance should have been deallocated", file: file, line: line)
-        }
     }
     
     private func failure(_ error: RemoteFeedLoader.Error) -> RemoteFeedLoader.Result {
