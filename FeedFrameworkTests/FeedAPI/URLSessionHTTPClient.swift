@@ -17,11 +17,15 @@ class URLHTTPSessionClient {
         self.session = session
     }
     
+    struct UnexpectedValuesRepresentedError: Error {}
+    
     func get(from url: URL, completion: @escaping(HTTPClientResult) -> ()) {
         self.session.dataTask(with: url) { (_, _, error)  in
             if let error = error {
                 completion(.failure(error))
                 return
+            } else {
+                completion(.failure(UnexpectedValuesRepresentedError()))
             }
             
         }.resume()
@@ -41,7 +45,7 @@ class URLSessionHTTPClient: XCTestCase {
     }
     
     func test_getFromURL_performsGetRequestFromURL() {
-
+        
         let url = anyURL()
         
         let exp = XCTestExpectation(description: "Wait for request")
@@ -75,17 +79,34 @@ class URLSessionHTTPClient: XCTestCase {
         wait(for: [exp], timeout: 1.0)
     }
     
+    func test_getFromURL_failsAllNilValues() {
+        URLProtocolStub.stub(data: nil, response: nil, error: nil)
+        let exp = XCTestExpectation(description: "Wait to load")
+        
+        makeSUT().get(from: anyURL()) { result in
+            switch result {
+            case .failure:
+                break
+            default:
+                XCTFail()
+            }
+            exp.fulfill()
+        }
+        
+        wait(for: [exp], timeout: 1.0)
+    }
+    
     private func anyURL() -> URL {
-         return URL(string: "http://image.url")!
-     }
+        return URL(string: "http://image.url")!
+    }
     
     private func makeSUT(file:StaticString = #file,
-    line: UInt = #line) -> URLHTTPSessionClient {
+                         line: UInt = #line) -> URLHTTPSessionClient {
         let sut = URLHTTPSessionClient()
         self.trackForMemoryLeak(object: sut)
         return sut
     }
-
+    
 }
 
 class URLProtocolStub: URLProtocol {
