@@ -7,6 +7,7 @@
 //
 
 import XCTest
+import FeedFramework
 
 class URLHTTPSessionClient {
     let session: URLSession
@@ -15,45 +16,70 @@ class URLHTTPSessionClient {
         self.session = session
     }
     
-    func get(from url: URL) {
-        self.session.dataTask(with: url) { (_, _, _)  in
-            
+    func get(from url: URL, completion: @escaping(HTTPClientResult) -> ()) {
+        self.session.dataTask(with: url) { (_, _, error)  in
+            if let error = error {
+                completion(.failure(error))
+                return
+            }
+
         }.resume()
     }
 }
 // MARK - Helpers
 class URLSessionHTTPClient: XCTestCase {
-    func test_getFromURL_createdDataWithTask() {
-        let url = URL(string: "http://some-strin.com")!
-        let session = URLSessionSpy()
-        let sut = URLHTTPSessionClient(with: session)
-        sut.get(from: url)
-        XCTAssertEqual(session.recivedURLs, [url])
-    }
-    
     func test_getFromURL_resumesDataTaskFromURL() {
         let url = URL(string: "http://stub.com")!
         let task = URLSessionDataTaskSpy()
         let session = URLSessionSpy()
         let sut = URLHTTPSessionClient(with: session)
         session.stub(url: url, with: task)
-        sut.get(from: url)
+        sut.get(from: url) { _ in}
         XCTAssertEqual(task.resumeCount, 1)
+    }
+    
+    func test_getFromURL_failsOnRequestError() {
+        let url = URL(string: "http://stub.com")!
+        let sampleError = NSError(domain: "", code: 0)
+        let session = URLSessionSpy()
+        let sut = URLHTTPSessionClient(with: session)
+        session.stub(url: url, error: sampleError)
+        let exp = XCTestExpectation(description: "Wait to load")
+        
+        sut.get(from: url) { result in
+            switch result {
+            case let .failure(error as NSError):
+                XCTAssertEqual(sampleError, error)
+            default:
+                XCTFail()
+            }
+            exp.fulfill()
+        }
+        wait(for: [exp], timeout: 1.0)
     }
 }
 
 class URLSessionSpy: URLSession {
     var recivedURLs = [URL]()
-    private var stubTasks = [URL: URLSessionDataTask]()
+    private var stubTasks = [URL: Stub]()
     
-    func stub(url: URL, with task: URLSessionDataTask) {
-        stubTasks[url] = task
+    private struct Stub {
+        let task: URLSessionDataTask
+        let error: Error?
+    }
+    
+    func stub(url: URL, with task: URLSessionDataTask = FakeDataTask(), error: Error? = nil) {
+        let stub = Stub(task: task, error: error)
+        stubTasks[url] = stub
     }
     
     override func dataTask(with url: URL, completionHandler: @escaping (Data?, URLResponse?, Error?) -> Void) -> URLSessionDataTask {
-        self.recivedURLs.append(url)
+        if let stub = self.stubTasks[url] {
+            completionHandler(nil, nil, stub.error)
+            return stub.task
+        }
         
-        return stubTasks[url] ?? FakeDataTask()
+        fatalError()
     }
 }
 
