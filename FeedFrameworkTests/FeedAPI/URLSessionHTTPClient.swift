@@ -9,30 +9,6 @@
 import XCTest
 import FeedFramework
 
-
-class URLHTTPSessionClient {
-    let session: URLSession
-    
-    init(with session: URLSession = URLSession.shared) {
-        self.session = session
-    }
-    
-    struct UnexpectedValuesRepresentedError: Error {}
-    
-    func get(from url: URL, completion: @escaping(HTTPClientResult) -> ()) {
-        self.session.dataTask(with: url) { (data, response, error)  in
-            if let error = error {
-                completion(.failure(error))
-                return
-            } else if let data = data, let response = response as? HTTPURLResponse {
-                completion(.success(data, response))
-            } else {
-                completion(.failure(UnexpectedValuesRepresentedError()))
-            }
-            
-        }.resume()
-    }
-}
 // MARK - Helpers
 class URLSessionHTTPClient: XCTestCase {
     
@@ -171,7 +147,7 @@ class URLSessionHTTPClient: XCTestCase {
     }
     
     private func makeSUT(file:StaticString = #file,
-                         line: UInt = #line) -> URLHTTPSessionClient {
+                         line: UInt = #line) -> HTTPClient {
         let sut = URLHTTPSessionClient()
         self.trackForMemoryLeak(object: sut)
         return sut
