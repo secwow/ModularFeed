@@ -27,15 +27,15 @@ class RemoteFeedLoaderTests: XCTestCase {
     func test_loadTwice_clientRequestsDataFromURL() {
         let url = URL(string: "http://some-url.com")!
         let (loader, client) = sut(url: url)
-        loader.load{ _ in }
-        loader.load{ _ in }
+        loader.load { _ in }
+        loader.load { _ in }
         XCTAssertEqual(client.requestedURLs, [url, url])
     }
     
     func test_load_deliversErrorOnClient() {
         let (loader, client) = sut()
         
-        expect(loader, toCompleteWithResult: .failure(.connectivity), when: {
+        expect(loader, toCompleteWithResult: .failure(RemoteFeedLoader.Error.connectivity), when: {
             let error = NSError(domain: "", code: 0)
             client.complete(with: error)
         })
@@ -46,7 +46,7 @@ class RemoteFeedLoaderTests: XCTestCase {
         
         
         [199, 201, 300, 400, 500].enumerated().forEach { (index, code) in
-            expect(loader, toCompleteWithResult: .failure(.invalidData), when: {
+            expect(loader, toCompleteWithResult: .failure(RemoteFeedLoader.Error.invalidData), when: {
                 let json = makeItemsJSON([])
                 client.complete(withStatusCode: code, data: json, at: index)
             })
@@ -56,7 +56,7 @@ class RemoteFeedLoaderTests: XCTestCase {
     func test_load_deliversErrorOn200HttpResponeWithInvalidJSON() {
         let (loader, client) = sut()
         
-        expect(loader, toCompleteWithResult: .failure(.invalidData), when: {
+        expect(loader, toCompleteWithResult: .failure(RemoteFeedLoader.Error.invalidData), when: {
             let invalidJSON = Data("Data".utf8)
             client.complete(withStatusCode: 200, data: invalidJSON)
         })
