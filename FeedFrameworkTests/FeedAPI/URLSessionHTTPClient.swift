@@ -64,40 +64,41 @@ class URLSessionHTTPClient: XCTestCase {
         let sampleError = NSError(domain: "", code: 0)
         
         URLProtocolStub.stub(data: nil, response: nil, error: sampleError)
-        let exp = XCTestExpectation(description: "Wait to load")
-        
-        makeSUT().get(from: anyURL()) { result in
-            switch result {
-            case let .failure(error as NSError):
-                XCTAssertEqual(sampleError, error)
-            default:
-                XCTFail()
-            }
-            exp.fulfill()
-        }
-        
-        wait(for: [exp], timeout: 1.0)
+        let recievedError = resultErrorFor(data: nil, response: nil, error: sampleError)
+        XCTAssertEqual(recievedError as NSError?, sampleError)
     }
     
     func test_getFromURL_failsAllNilValues() {
-        URLProtocolStub.stub(data: nil, response: nil, error: nil)
-        let exp = XCTestExpectation(description: "Wait to load")
-        
-        makeSUT().get(from: anyURL()) { result in
-            switch result {
-            case .failure:
-                break
-            default:
-                XCTFail()
-            }
-            exp.fulfill()
-        }
-        
-        wait(for: [exp], timeout: 1.0)
+         let recievedError = resultErrorFor(data: nil, response: nil, error: nil)
+          XCTAssertNotNil(recievedError)
     }
     
     private func anyURL() -> URL {
         return URL(string: "http://image.url")!
+    }
+    
+    private func resultErrorFor(data: Data?,
+                                response: URLResponse?,
+                                error: Error?,
+                                file:StaticString = #file,
+                                line: UInt = #line) -> Error? {
+         URLProtocolStub.stub(data: data, response: response, error: error)
+        let exp = XCTestExpectation(description: "Wait to load")
+        var recievedError: Error?
+        makeSUT().get(from: anyURL()) { result in
+            switch result {
+            case .failure(let error):
+                recievedError = error
+                break
+            default:
+                XCTFail("Expected failure got result instead \(result)", file: file, line: line)
+            }
+            exp.fulfill()
+        }
+        
+        wait(for: [exp], timeout: 1.0)
+        
+        return recievedError
     }
     
     private func makeSUT(file:StaticString = #file,
