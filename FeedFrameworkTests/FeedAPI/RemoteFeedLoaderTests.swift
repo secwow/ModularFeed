@@ -42,7 +42,6 @@ class RemoteFeedLoaderTests: XCTestCase {
     func test_load_deliversErrorOnNon200CodeHTTPResponse() {
         let (loader, client) = sut()
         
-        
         [199, 201, 300, 400, 500].enumerated().forEach { (index, code) in
             expect(loader, toCompleteWithResult: failure(.invalidData), when: {
                 let json = makeItemsJSON([])
@@ -88,9 +87,8 @@ class RemoteFeedLoaderTests: XCTestCase {
     }
     
     func test_load_doesntDeliverResultAfterSUTWasDeallocated() {
-        let url = URL(string: "http://image.url")!
         let client = HTTPClientSpy()
-        var sut: RemoteFeedLoader? = RemoteFeedLoader(requestedURL: AnyU, httpClient: client)
+        var sut: RemoteFeedLoader? = RemoteFeedLoader(requestedURL: anyURL(), httpClient: client)
         var capturedResults = [RemoteFeedLoader.Result]()
         sut?.load { capturedResults.append($0) }
         
@@ -100,7 +98,7 @@ class RemoteFeedLoaderTests: XCTestCase {
         XCTAssertTrue(capturedResults.isEmpty)
     }
     
-    private func anyURL() -> {
+    private func anyURL() -> URL {
         return URL(string: "http://image.url")!
     }
     
