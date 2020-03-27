@@ -10,8 +10,6 @@ import XCTest
 import FeedFramework
 
 class RemoteFeedLoaderTests: XCTestCase {
-    var leakDetector: RemoteFeedLoader?
-    
     func test_init_clientDoesNotRequestDataFromURL() {
         let (_, client) = sut()
         XCTAssertTrue(client.requestedURLs.isEmpty)
@@ -92,7 +90,7 @@ class RemoteFeedLoaderTests: XCTestCase {
     func test_load_doesntDeliverResultAfterSUTWasDeallocated() {
         let url = URL(string: "http://image.url")!
         let client = HTTPClientSpy()
-        var sut: RemoteFeedLoader? = RemoteFeedLoader(requestedURL: url, httpClient: client)
+        var sut: RemoteFeedLoader? = RemoteFeedLoader(requestedURL: AnyU, httpClient: client)
         var capturedResults = [RemoteFeedLoader.Result]()
         sut?.load { capturedResults.append($0) }
         
@@ -100,6 +98,10 @@ class RemoteFeedLoaderTests: XCTestCase {
         client.complete(withStatusCode: 200, data: makeItemsJSON([]))
         
         XCTAssertTrue(capturedResults.isEmpty)
+    }
+    
+    private func anyURL() -> {
+        return URL(string: "http://image.url")!
     }
     
     private func makeItem(id: UUID, description: String? = nil, location: String? = nil, imageURL: URL) -> (model: FeedItem, json: [String: Any]){
