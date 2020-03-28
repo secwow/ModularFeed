@@ -51,15 +51,17 @@ import FeedFramework
 
 class LocalFeedLoder {
     let feedStore: FeedStore
+    let currentDate: () -> Date
     
-    init(with feedStore: FeedStore) {
+    init(with feedStore: FeedStore, currentDate: @escaping () -> Date) {
         self.feedStore = feedStore
+        self.currentDate = currentDate
     }
     
     func save(items: [FeedItem]) {
-        feedStore.deleteCachedFeed { [weak self] error in
+        feedStore.deleteCachedFeed { [unowned self] error in
             if error == nil {
-                self?.feedStore.insert(items)
+                self.feedStore.insert(items, timestamp: self.currentDate())
             }
         }
     }
@@ -70,14 +72,16 @@ class FeedStore {
     var insertCallCount = 0
     typealias DeletionCompletion = (Error?) -> ()
     private var deletionCompletions: [DeletionCompletion] = []
+    var insertions: [(items: [FeedItem], timeStamp: Date)] = []
     
     func deleteCachedFeed(completion: @escaping (Error?) -> ()) {
         deletedCachedFeedCallCount += 1
         deletionCompletions.append(completion)
     }
     
-    func insert(_ feedItems: [FeedItem]) {
+    func insert(_ feedItems: [FeedItem], timestamp: Date) {
         insertCallCount += 1
+        insertions.append((feedItems, timestamp))
     }
     
     func completeDeletion(with error: Error, at index: Int = 0) {
@@ -119,15 +123,30 @@ class CacheFeedUseCaseTests: XCTestCase {
         let (store, loader) = makeSUT()
         
         let items = [uniqueItem(), uniqueItem()]
- 
+        
         loader.save(items: items)
         store.completeDeletionSuccessfully()
         XCTAssertEqual(store.insertCallCount, 1)
     }
     
-    func makeSUT() -> (FeedStore, LocalFeedLoder) {
+    func test_save_requestsNewCacheInsertionWithTimestampOnSuccessfullDeletion() {
+        let timestamp = Date()
+        let (store, loader) = makeSUT(currentDate: { timestamp })
+        
+        let items = [uniqueItem(), uniqueItem()]
+        
+        loader.save(items: items)
+        store.completeDeletionSuccessfully()
+        XCTAssertEqual(store.insertCallCount, 1)
+        XCTAssertEqual(store.insertions.count, 1)
+        XCTAssertEqual(store.insertions.first?.items, items)
+        XCTAssertEqual(store.insertions.first?.timeStamp, timestamp)
+    }
+    
+    
+    func makeSUT(currentDate: @escaping () -> Date = Date.init) -> (FeedStore, LocalFeedLoder) {
         let store = FeedStore()
-        let loader = LocalFeedLoder(with: store)
+        let loader = LocalFeedLoder(with: store, currentDate: currentDate)
         trackForMemoryLeak(object: store)
         trackForMemoryLeak(object: loader)
         return (store, loader)
