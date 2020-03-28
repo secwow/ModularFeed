@@ -31,6 +31,24 @@ import FeedFramework
 // When the customer requests to see the feed
 // Then the app should display an error message
 
+//Cache Feed Use Case
+//Data:
+//Feed items
+
+//Primary course (happy path):
+//Execute "Save Feed Items" command with above data.
+//System deletes old cache data.
+//System encodes feed items.
+//System timestamps the new cache.
+//System saves new cache data.
+//System delivers success message.
+
+//Deleting error course (sad path):
+//System delivers error.
+
+//Saving error course (sad path):
+//System delivers error.
+
 class LocalFeedLoder {
     let feedStore: FeedStore
     
@@ -45,11 +63,17 @@ class LocalFeedLoder {
 
 class FeedStore {
     var deletedCachedFeedCallCount = 0
+    var insertCallCount = 0
     
     
     func deleteCachedFeed() {
         deletedCachedFeedCallCount += 1
     }
+    
+    func completeDeletion(with error: Error, at index: Int = 0) {
+        
+    }
+    
 }
 
 class CacheFeedUseCaseTests: XCTestCase {
@@ -61,11 +85,21 @@ class CacheFeedUseCaseTests: XCTestCase {
     }
     
     func test_save_requestCacheDeletion() {
-                let (store, loader) = makeSUT()
+        let (store, loader) = makeSUT()
         
         let items = [uniqueItem(), uniqueItem()]
         loader.save(items: items)
         XCTAssertEqual(store.deletedCachedFeedCallCount, 1)
+    }
+    
+    func test_save_doesNotRequestCacheInsertionOnDeletionError() {
+        let (store, loader) = makeSUT()
+        
+        let items = [uniqueItem(), uniqueItem()]
+        let deletionError = anyNSError()
+        loader.save(items: items)
+        store.completeDeletion(with: deletionError)
+        XCTAssertEqual(store.insertCallCount, 1)
     }
     
     func makeSUT() -> (FeedStore, LocalFeedLoder) {
@@ -78,6 +112,13 @@ class CacheFeedUseCaseTests: XCTestCase {
     
     func uniqueItem() -> FeedItem {
         return FeedItem(id: UUID(), description: "fds", location: "fds", imageURL: URL(string: "http://some.url")!)
+    }
+    
+    private func anyURL() -> URL {
+        return URL(string: "http://image.url")!
+    }
+    private func anyNSError() -> NSError {
+        return NSError(domain: "", code: 0, userInfo: nil)
     }
     
 }
