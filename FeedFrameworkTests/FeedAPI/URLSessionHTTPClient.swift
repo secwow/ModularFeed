@@ -156,26 +156,31 @@ class URLSessionHTTPClient: XCTestCase {
 }
 
 class URLProtocolStub: URLProtocol {
-    private static var stub: Stub?
-    private static var observer: ((URLRequest) -> Void)?
+    private static var _stub: Stub?
+
+    private static var stub: Stub? {
+        get { self.stubQueue.sync {return _stub}}
+        set { self.stubQueue.sync { _stub = newValue }}
+    }
     
+    private static let stubQueue = DispatchQueue(label: "FeedFramework.stubQueue")
     
     private struct Stub {
         let data: Data?
         let error: Error?
         let response: URLResponse?
+        let observer: ((URLRequest) -> Void)?
     }
     
     static func stub( data: Data?, response: URLResponse?, error: Error? = nil) {
-        stub = Stub(data: data, error: error, response: response)
+        stub = Stub(data: data, error: error, response: response, observer: nil)
     }
     
     static func observeRequest(observer: @escaping (URLRequest) -> Void) {
-        self.observer = observer
+        stub = Stub(data: nil, error: nil, response: nil, observer: observer)
     }
     
     override class func canInit(with request: URLRequest) -> Bool {
-        observer?(request)
         return true
     }
     
@@ -190,11 +195,11 @@ class URLProtocolStub: URLProtocol {
     static func stopInterceptingRequests() {
         URLProtocol.unregisterClass(URLProtocolStub.self)
         stub = nil
-        observer = nil
     }
     
     override func startLoading() {
         let stub = URLProtocolStub.stub
+
         if let data = stub?.data {
             client?.urlProtocol(self, didLoad: data)
         }
@@ -205,10 +210,11 @@ class URLProtocolStub: URLProtocol {
         
         if let error = stub?.error {
             client?.urlProtocol(self, didFailWithError: error)
+        } else {
+            client?.urlProtocolDidFinishLoading(self)
         }
         
-        client?.urlProtocolDidFinishLoading(self)
-        
+        stub?.observer?(request)
     }
     
     override func stopLoading() {}
