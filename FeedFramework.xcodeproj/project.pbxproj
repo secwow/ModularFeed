@@ -11,6 +11,7 @@
 		EF0078D2242F6BA500D5CB37 /* FeedFrameworkAPIEndToEndTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF0078D1242F6BA500D5CB37 /* FeedFrameworkAPIEndToEndTests.swift */; };
 		EF0078D4242F6BA500D5CB37 /* FeedFramework.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EF90577F242BA50B0027ACC5 /* FeedFramework.framework */; };
 		EF0078DA242F752400D5CB37 /* XCTestCase+TrackMemoryLeaks.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF9057A9242E1FD10027ACC5 /* XCTestCase+TrackMemoryLeaks.swift */; };
+		EF468A51242FEFA100E9B4B9 /* CacheFeedUseCaseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF468A50242FEFA100E9B4B9 /* CacheFeedUseCaseTests.swift */; };
 		EF905789242BA50B0027ACC5 /* FeedFramework.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EF90577F242BA50B0027ACC5 /* FeedFramework.framework */; };
 		EF90578E242BA50B0027ACC5 /* RemoteFeedLoaderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF90578D242BA50B0027ACC5 /* RemoteFeedLoaderTests.swift */; };
 		EF90579A242BA54E0027ACC5 /* FeedItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF905799242BA54E0027ACC5 /* FeedItem.swift */; };
@@ -44,6 +45,7 @@
 		EF0078CF242F6BA500D5CB37 /* FeedFrameworkAPIEndToEndTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = FeedFrameworkAPIEndToEndTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		EF0078D1242F6BA500D5CB37 /* FeedFrameworkAPIEndToEndTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedFrameworkAPIEndToEndTests.swift; sourceTree = "<group>"; };
 		EF0078D3242F6BA500D5CB37 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		EF468A50242FEFA100E9B4B9 /* CacheFeedUseCaseTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CacheFeedUseCaseTests.swift; sourceTree = "<group>"; };
 		EF90577F242BA50B0027ACC5 /* FeedFramework.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = FeedFramework.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		EF905783242BA50B0027ACC5 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		EF905788242BA50B0027ACC5 /* FeedFrameworkTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = FeedFrameworkTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -94,6 +96,14 @@
 			path = FeedFrameworkAPIEndToEndTests;
 			sourceTree = "<group>";
 		};
+		EF468A4F242FEF7B00E9B4B9 /* FeedCache */ = {
+			isa = PBXGroup;
+			children = (
+				EF468A50242FEFA100E9B4B9 /* CacheFeedUseCaseTests.swift */,
+			);
+			path = FeedCache;
+			sourceTree = "<group>";
+		};
 		EF905775242BA50B0027ACC5 = {
 			isa = PBXGroup;
 			children = (
@@ -129,6 +139,7 @@
 		EF90578C242BA50B0027ACC5 /* FeedFrameworkTests */ = {
 			isa = PBXGroup;
 			children = (
+				EF468A4F242FEF7B00E9B4B9 /* FeedCache */,
 				EF9057A8242E1FC10027ACC5 /* Helpers */,
 				EF9057A5242D28E60027ACC5 /* FeedAPI */,
 				EF90578F242BA50B0027ACC5 /* Info.plist */,
@@ -333,6 +344,7 @@
 			files = (
 				EF90578E242BA50B0027ACC5 /* RemoteFeedLoaderTests.swift in Sources */,
 				EF9057AA242E1FD10027ACC5 /* XCTestCase+TrackMemoryLeaks.swift in Sources */,
+				EF468A51242FEFA100E9B4B9 /* CacheFeedUseCaseTests.swift in Sources */,
 				EF9057A7242E091E0027ACC5 /* URLSessionHTTPClient.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
