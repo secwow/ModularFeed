@@ -10,7 +10,6 @@ import XCTest
 import FeedFramework
 
 class FeedFrameworkAPIEndToEndTests: XCTestCase {
-    
     func test_endToEndTestGETfeedResult_mathchesFixedTestAccountData() {
         switch getFeedResult() {
         case let .success(items)?:
@@ -33,7 +32,8 @@ class FeedFrameworkAPIEndToEndTests: XCTestCase {
     private func getFeedResult(file:StaticString = #file,
                                line: UInt = #line) -> LoadFeedResult? {
         let testServerURL = URL(string: "https://essentialdeveloper.com/feed-case-study/test-api/feed")!
-        let client = URLHTTPSessionClient()
+        let session = URLSession(configuration: .ephemeral)
+        let client = URLHTTPSessionClient(with: session)
         let loader = RemoteFeedLoader(requestedURL: testServerURL, httpClient: client)
         trackForMemoryLeak(object: client, file: file, line: line)
         trackForMemoryLeak(object: loader, file: file, line: line)
