@@ -57,23 +57,36 @@ class LocalFeedLoder {
     }
     
     func save(items: [FeedItem]) {
-        feedStore.deleteCachedFeed()
+        feedStore.deleteCachedFeed { [weak self] error in
+            if error == nil {
+                self?.feedStore.insert(items)
+            }
+        }
     }
 }
 
 class FeedStore {
     var deletedCachedFeedCallCount = 0
     var insertCallCount = 0
+    typealias DeletionCompletion = (Error?) -> ()
+    private var deletionCompletions: [DeletionCompletion] = []
     
-    
-    func deleteCachedFeed() {
+    func deleteCachedFeed(completion: @escaping (Error?) -> ()) {
         deletedCachedFeedCallCount += 1
+        deletionCompletions.append(completion)
+    }
+    
+    func insert(_ feedItems: [FeedItem]) {
+        insertCallCount += 1
     }
     
     func completeDeletion(with error: Error, at index: Int = 0) {
-        
+        deletionCompletions[index](error)
     }
     
+    func completeDeletionSuccessfully(at index: Int = 0) {
+        deletionCompletions[index](nil)
+    }
 }
 
 class CacheFeedUseCaseTests: XCTestCase {
@@ -99,6 +112,16 @@ class CacheFeedUseCaseTests: XCTestCase {
         let deletionError = anyNSError()
         loader.save(items: items)
         store.completeDeletion(with: deletionError)
+        XCTAssertEqual(store.insertCallCount, 0)
+    }
+    
+    func test_save_requestsNewCacheInsertionOnSuccessfullDeletion() {
+        let (store, loader) = makeSUT()
+        
+        let items = [uniqueItem(), uniqueItem()]
+ 
+        loader.save(items: items)
+        store.completeDeletionSuccessfully()
         XCTAssertEqual(store.insertCallCount, 1)
     }
     
