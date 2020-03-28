@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		EF0078CA242E6EC000D5CB37 /* URLSessionHTTPClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF0078C9242E6EC000D5CB37 /* URLSessionHTTPClient.swift */; };
+		EF0078D2242F6BA500D5CB37 /* FeedFrameworkAPIEndToEndTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF0078D1242F6BA500D5CB37 /* FeedFrameworkAPIEndToEndTests.swift */; };
+		EF0078D4242F6BA500D5CB37 /* FeedFramework.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EF90577F242BA50B0027ACC5 /* FeedFramework.framework */; };
 		EF905789242BA50B0027ACC5 /* FeedFramework.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EF90577F242BA50B0027ACC5 /* FeedFramework.framework */; };
 		EF90578E242BA50B0027ACC5 /* RemoteFeedLoaderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF90578D242BA50B0027ACC5 /* RemoteFeedLoaderTests.swift */; };
 		EF90579A242BA54E0027ACC5 /* FeedItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF905799242BA54E0027ACC5 /* FeedItem.swift */; };
@@ -20,6 +22,13 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		EF0078D5242F6BA500D5CB37 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = EF905776242BA50B0027ACC5 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = EF90577E242BA50B0027ACC5;
+			remoteInfo = FeedFramework;
+		};
 		EF90578A242BA50B0027ACC5 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = EF905776242BA50B0027ACC5 /* Project object */;
@@ -31,6 +40,9 @@
 
 /* Begin PBXFileReference section */
 		EF0078C9242E6EC000D5CB37 /* URLSessionHTTPClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLSessionHTTPClient.swift; sourceTree = "<group>"; };
+		EF0078CF242F6BA500D5CB37 /* FeedFrameworkAPIEndToEndTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = FeedFrameworkAPIEndToEndTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		EF0078D1242F6BA500D5CB37 /* FeedFrameworkAPIEndToEndTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedFrameworkAPIEndToEndTests.swift; sourceTree = "<group>"; };
+		EF0078D3242F6BA500D5CB37 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		EF90577F242BA50B0027ACC5 /* FeedFramework.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = FeedFramework.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		EF905783242BA50B0027ACC5 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		EF905788242BA50B0027ACC5 /* FeedFrameworkTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = FeedFrameworkTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -46,6 +58,14 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		EF0078CC242F6BA500D5CB37 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				EF0078D4242F6BA500D5CB37 /* FeedFramework.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		EF90577C242BA50B0027ACC5 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -64,11 +84,21 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		EF0078D0242F6BA500D5CB37 /* FeedFrameworkAPIEndToEndTests */ = {
+			isa = PBXGroup;
+			children = (
+				EF0078D1242F6BA500D5CB37 /* FeedFrameworkAPIEndToEndTests.swift */,
+				EF0078D3242F6BA500D5CB37 /* Info.plist */,
+			);
+			path = FeedFrameworkAPIEndToEndTests;
+			sourceTree = "<group>";
+		};
 		EF905775242BA50B0027ACC5 = {
 			isa = PBXGroup;
 			children = (
 				EF905781242BA50B0027ACC5 /* FeedFramework */,
 				EF90578C242BA50B0027ACC5 /* FeedFrameworkTests */,
+				EF0078D0242F6BA500D5CB37 /* FeedFrameworkAPIEndToEndTests */,
 				EF905780242BA50B0027ACC5 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -78,6 +108,7 @@
 			children = (
 				EF90577F242BA50B0027ACC5 /* FeedFramework.framework */,
 				EF905788242BA50B0027ACC5 /* FeedFrameworkTests.xctest */,
+				EF0078CF242F6BA500D5CB37 /* FeedFrameworkAPIEndToEndTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -152,6 +183,24 @@
 /* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
+		EF0078CE242F6BA500D5CB37 /* FeedFrameworkAPIEndToEndTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = EF0078D7242F6BA500D5CB37 /* Build configuration list for PBXNativeTarget "FeedFrameworkAPIEndToEndTests" */;
+			buildPhases = (
+				EF0078CB242F6BA500D5CB37 /* Sources */,
+				EF0078CC242F6BA500D5CB37 /* Frameworks */,
+				EF0078CD242F6BA500D5CB37 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				EF0078D6242F6BA500D5CB37 /* PBXTargetDependency */,
+			);
+			name = FeedFrameworkAPIEndToEndTests;
+			productName = FeedFrameworkAPIEndToEndTests;
+			productReference = EF0078CF242F6BA500D5CB37 /* FeedFrameworkAPIEndToEndTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 		EF90577E242BA50B0027ACC5 /* FeedFramework */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = EF905793242BA50B0027ACC5 /* Build configuration list for PBXNativeTarget "FeedFramework" */;
@@ -198,6 +247,9 @@
 				LastUpgradeCheck = 1130;
 				ORGANIZATIONNAME = AndAdmin;
 				TargetAttributes = {
+					EF0078CE242F6BA500D5CB37 = {
+						CreatedOnToolsVersion = 11.3.1;
+					};
 					EF90577E242BA50B0027ACC5 = {
 						CreatedOnToolsVersion = 11.3.1;
 						LastSwiftMigration = 1130;
@@ -222,11 +274,19 @@
 			targets = (
 				EF90577E242BA50B0027ACC5 /* FeedFramework */,
 				EF905787242BA50B0027ACC5 /* FeedFrameworkTests */,
+				EF0078CE242F6BA500D5CB37 /* FeedFrameworkAPIEndToEndTests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		EF0078CD242F6BA500D5CB37 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		EF90577D242BA50B0027ACC5 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -244,6 +304,14 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		EF0078CB242F6BA500D5CB37 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				EF0078D2242F6BA500D5CB37 /* FeedFrameworkAPIEndToEndTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		EF90577B242BA50B0027ACC5 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -270,6 +338,11 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		EF0078D6242F6BA500D5CB37 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = EF90577E242BA50B0027ACC5 /* FeedFramework */;
+			targetProxy = EF0078D5242F6BA500D5CB37 /* PBXContainerItemProxy */;
+		};
 		EF90578B242BA50B0027ACC5 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = EF90577E242BA50B0027ACC5 /* FeedFramework */;
@@ -278,6 +351,42 @@
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
+		EF0078D8242F6BA500D5CB37 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				DEVELOPMENT_TEAM = DX34ZZXSN8;
+				INFOPLIST_FILE = FeedFrameworkAPIEndToEndTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.brightSky.FeedFrameworkAPIEndToEndTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		EF0078D9242F6BA500D5CB37 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				DEVELOPMENT_TEAM = DX34ZZXSN8;
+				INFOPLIST_FILE = FeedFrameworkAPIEndToEndTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.brightSky.FeedFrameworkAPIEndToEndTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
 		EF905791242BA50B0027ACC5 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -489,6 +598,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		EF0078D7242F6BA500D5CB37 /* Build configuration list for PBXNativeTarget "FeedFrameworkAPIEndToEndTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				EF0078D8242F6BA500D5CB37 /* Debug */,
+				EF0078D9242F6BA500D5CB37 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		EF905779242BA50B0027ACC5 /* Build configuration list for PBXProject "FeedFramework" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
