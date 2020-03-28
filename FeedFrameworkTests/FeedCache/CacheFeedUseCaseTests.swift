@@ -32,13 +32,24 @@ import FeedFramework
 // Then the app should display an error message
 
 class LocalFeedLoder {
+    let feedStore: FeedStore
+    
     init(with feedStore: FeedStore) {
-        
+        self.feedStore = feedStore
+    }
+    
+    func save(items: [FeedItem]) {
+        feedStore.deleteCachedFeed()
     }
 }
 
 class FeedStore {
     var deletedCachedFeedCallCount = 0
+    
+    
+    func deleteCachedFeed() {
+        deletedCachedFeedCallCount += 1
+    }
 }
 
 class CacheFeedUseCaseTests: XCTestCase {
@@ -46,8 +57,21 @@ class CacheFeedUseCaseTests: XCTestCase {
     func test_init_doesnNotDeleteUponCreation() {
         let store = FeedStore()
         let loader = LocalFeedLoder(with: store)
+
         
         XCTAssertEqual(store.deletedCachedFeedCallCount, 0)
+    }
+    
+    func test_save_requestCacheDeletion() {
+        let store = FeedStore()
+        let loader = LocalFeedLoder(with: store)
+        let items = [uniqueItem(), uniqueItem()]
+        loader.save(items: items)
+        XCTAssertEqual(store.deletedCachedFeedCallCount, 1)
+    }
+    
+    func uniqueItem() -> FeedItem {
+        return FeedItem(id: UUID(), description: "fds", location: "fds", imageURL: URL(string: "http://some.url")!)
     }
     
 }
