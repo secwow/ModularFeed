@@ -127,11 +127,10 @@
 		EF905781242BA50B0027ACC5 /* FeedFramework */ = {
 			isa = PBXGroup;
 			children = (
+				EF9A3D7A2430DB2200FE0BE8 /* FeedCache */,
 				EF9057A2242D21870027ACC5 /* FeedFeature */,
 				EF9057A1242D213C0027ACC5 /* FeedAPI */,
 				EF905783242BA50B0027ACC5 /* Info.plist */,
-				EF90579B242BA6390027ACC5 /* FeedLoader.swift */,
-				EF90579D242CA6980027ACC5 /* RemoteFeedLoader.swift */,
 			);
 			path = FeedFramework;
 			sourceTree = "<group>";
@@ -151,6 +150,8 @@
 			isa = PBXGroup;
 			children = (
 				EF90579F242D21320027ACC5 /* HTTPClient.swift */,
+				EF90579B242BA6390027ACC5 /* FeedLoader.swift */,
+				EF90579D242CA6980027ACC5 /* RemoteFeedLoader.swift */,
 				EF0078C9242E6EC000D5CB37 /* URLSessionHTTPClient.swift */,
 			);
 			path = FeedAPI;
@@ -180,6 +181,13 @@
 				EF9057A9242E1FD10027ACC5 /* XCTestCase+TrackMemoryLeaks.swift */,
 			);
 			path = Helpers;
+			sourceTree = "<group>";
+		};
+		EF9A3D7A2430DB2200FE0BE8 /* FeedCache */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = FeedCache;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */

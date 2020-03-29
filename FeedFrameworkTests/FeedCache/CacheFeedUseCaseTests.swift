@@ -59,7 +59,8 @@ class LocalFeedLoder {
     }
     
     func save(items: [FeedItem], completion: @escaping (Error?) -> () = { _ in }) {
-        feedStore.deleteCachedFeed { [unowned self] error in
+        feedStore.deleteCachedFeed { [weak self] error in
+            guard let self = self else { return }
             if error == nil {
                 self.feedStore.insert(items, timestamp: self.currentDate(), completion: completion)
             } else {
@@ -69,7 +70,15 @@ class LocalFeedLoder {
     }
 }
 
-class FeedStore {
+protocol FeedStore {
+    typealias DeleteCacheCompletion = (Error?) -> ()
+    typealias InsertionCompletion = (Error?) -> ()
+    
+    func deleteCachedFeed(completion:  @escaping (Error?) -> ())
+    func insert(_ feedItems: [FeedItem], timestamp: Date, completion: @escaping InsertionCompletion)
+}
+
+class FeedStoreSpy: FeedStore {
     typealias DeleteCacheCompletion = (Error?) -> ()
     typealias InsertionCompletion = (Error?) -> ()
     private var deletionCompletions: [DeleteCacheCompletion] = []
@@ -174,6 +183,22 @@ class CacheFeedUseCaseTests: XCTestCase {
         })
     }
     
+    func test_save_doesntDeliverSUTErrorAfterInstanceHasBeenDeallocated() {
+        let store = FeedStoreSpy()
+        var loader: LocalFeedLoder? = LocalFeedLoder(with: store, currentDate: Date.init)
+        
+        var recivedResults = [Error?]()
+        
+        loader?.save(items: [uniqueItem()]) { error in
+            recivedResults.append(error)
+        }
+        
+        loader = nil
+        
+        store.completeDeletion(with: anyNSError())
+        XCTAssertTrue(recivedResults.isEmpty)
+    }
+    
     func expect(_ sut: LocalFeedLoder,
                 toCompleteWithError error: Error?,
                 when: ()->(),
@@ -195,8 +220,8 @@ class CacheFeedUseCaseTests: XCTestCase {
         XCTAssertEqual(error as NSError?, recievedError as NSError?, file:file, line: line)
     }
     
-    func makeSUT(currentDate: @escaping () -> Date = Date.init) -> (FeedStore, LocalFeedLoder) {
-        let store = FeedStore()
+    func makeSUT(currentDate: @escaping () -> Date = Date.init) -> (FeedStoreSpy, LocalFeedLoder) {
+        let store = FeedStoreSpy()
         let loader = LocalFeedLoder(with: store, currentDate: currentDate)
         trackForMemoryLeak(object: store)
         trackForMemoryLeak(object: loader)
