@@ -1,12 +1,15 @@
 import Foundation
 
+internal struct RemoteFeedItem: Decodable {
+    internal let id: UUID
+    internal let description: String?
+    internal let location: String?
+    internal let image: URL
+}
+
 class FeedItemsMapper {
     private struct FeedItems: Decodable {
-        let items: [Item]
-        
-        var feed: [FeedItem] {
-            return items.map({$0.item})
-        }
+        let items: [RemoteFeedItem]
     }
     
     static var OK_200: Int { return 200 }
@@ -22,12 +25,12 @@ class FeedItemsMapper {
         }
     }
     
-    static func map(_ data: Data, _ response: HTTPURLResponse) -> RemoteFeedLoader.Result {
+    static func map(_ data: Data, _ response: HTTPURLResponse) throws -> [RemoteFeedItem] {
         guard response.statusCode == FeedItemsMapper.OK_200, let feedItems = try? JSONDecoder().decode(FeedItems.self, from: data) else {
-            return .failure(RemoteFeedLoader.Error.invalidData)
+            throw RemoteFeedLoader.Error.invalidData
         }
 
-        return .success(feedItems.feed)
+        return feedItems.items
     }
 }
 
