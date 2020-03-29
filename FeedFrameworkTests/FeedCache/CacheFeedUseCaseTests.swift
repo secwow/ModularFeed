@@ -176,7 +176,7 @@ class CacheFeedUseCaseTests: XCTestCase {
         let insertionError = anyNSError()
         
         var recievedError: Error?
-        loader.save(items: items) {error in
+        loader.save(items: items) { error in
             recievedError = error
             exp.fulfill()
         }
@@ -189,14 +189,12 @@ class CacheFeedUseCaseTests: XCTestCase {
         XCTAssertEqual(recievedError as NSError?, insertionError)
     }
     
-    func test_save_failsOnInsertionError() {
+    func test_save_succsedOnSuccessfulInsetion() {
         let timestamp = Date()
         let (store, loader) = makeSUT(currentDate: { timestamp })
         
         let items = [uniqueItem(), uniqueItem()]
         let exp = XCTestExpectation()
-        
-        let insertionError = anyNSError()
         
         var recievedError: Error?
         loader.save(items: items) {error in
