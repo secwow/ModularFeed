@@ -49,38 +49,6 @@ import FeedFramework
 //Saving error course (sad path):
 //System delivers error.
 
-class LocalFeedLoder {
-    let feedStore: FeedStore
-    let currentDate: () -> Date
-    
-    init(with feedStore: FeedStore, currentDate: @escaping () -> Date) {
-        self.feedStore = feedStore
-        self.currentDate = currentDate
-    }
-    
-    func save(items: [FeedItem], completion: @escaping (Error?) -> () = { _ in }) {
-        feedStore.deleteCachedFeed { [weak self] error in
-            guard let self = self else { return }
-            if error == nil {
-                self.feedStore.insert(items, timestamp: self.currentDate()) { [weak self] error in
-                    guard self != nil else { return }
-                    completion(error)
-                }
-            } else {
-                completion(error)
-            }
-        }
-    }
-}
-
-protocol FeedStore {
-    typealias DeleteCacheCompletion = (Error?) -> ()
-    typealias InsertionCompletion = (Error?) -> ()
-    
-    func deleteCachedFeed(completion:  @escaping (Error?) -> ())
-    func insert(_ feedItems: [FeedItem], timestamp: Date, completion: @escaping InsertionCompletion)
-}
-
 class FeedStoreSpy: FeedStore {
     typealias DeleteCacheCompletion = (Error?) -> ()
     typealias InsertionCompletion = (Error?) -> ()
