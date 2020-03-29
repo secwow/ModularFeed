@@ -23,6 +23,7 @@
 		EF9057AA242E1FD10027ACC5 /* XCTestCase+TrackMemoryLeaks.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF9057A9242E1FD10027ACC5 /* XCTestCase+TrackMemoryLeaks.swift */; };
 		EF9A3D7C2430DE9E00FE0BE8 /* LocalFeedLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF9A3D7B2430DE9E00FE0BE8 /* LocalFeedLoader.swift */; };
 		EF9A3D7E2430DEFB00FE0BE8 /* FeedStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF9A3D7D2430DEFB00FE0BE8 /* FeedStore.swift */; };
+		EF9A3D802430E35600FE0BE8 /* LocalFeedItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF9A3D7F2430E35600FE0BE8 /* LocalFeedItem.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -62,6 +63,7 @@
 		EF9057A9242E1FD10027ACC5 /* XCTestCase+TrackMemoryLeaks.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "XCTestCase+TrackMemoryLeaks.swift"; sourceTree = "<group>"; };
 		EF9A3D7B2430DE9E00FE0BE8 /* LocalFeedLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalFeedLoader.swift; sourceTree = "<group>"; };
 		EF9A3D7D2430DEFB00FE0BE8 /* FeedStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedStore.swift; sourceTree = "<group>"; };
+		EF9A3D7F2430E35600FE0BE8 /* LocalFeedItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalFeedItem.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -192,6 +194,7 @@
 			children = (
 				EF9A3D7B2430DE9E00FE0BE8 /* LocalFeedLoader.swift */,
 				EF9A3D7D2430DEFB00FE0BE8 /* FeedStore.swift */,
+				EF9A3D7F2430E35600FE0BE8 /* LocalFeedItem.swift */,
 			);
 			path = FeedCache;
 			sourceTree = "<group>";
@@ -347,6 +350,7 @@
 				EF90579C242BA6390027ACC5 /* FeedLoader.swift in Sources */,
 				EF90579E242CA6980027ACC5 /* RemoteFeedLoader.swift in Sources */,
 				EF9A3D7E2430DEFB00FE0BE8 /* FeedStore.swift in Sources */,
+				EF9A3D802430E35600FE0BE8 /* LocalFeedItem.swift in Sources */,
 				EF9A3D7C2430DE9E00FE0BE8 /* LocalFeedLoader.swift in Sources */,
 				EF9057A0242D21320027ACC5 /* HTTPClient.swift in Sources */,
 				EF90579A242BA54E0027ACC5 /* FeedItem.swift in Sources */,
