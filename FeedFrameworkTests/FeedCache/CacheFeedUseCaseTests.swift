@@ -148,66 +148,51 @@ class CacheFeedUseCaseTests: XCTestCase {
     func test_save_failOnDeletionError() {
         let timestamp = Date()
         let (store, loader) = makeSUT(currentDate: { timestamp })
-        
-        let items = [uniqueItem(), uniqueItem()]
         let deletionError = anyNSError()
-
-        var recievedError: Error?
         
-        let exp = XCTestExpectation()
-        loader.save(items: items) {error in
-            recievedError = error
-            exp.fulfill()
-        }
-        
-        store.completeDeletion(with: deletionError)
-        wait(for: [exp], timeout: 1.0)
-        
-        XCTAssertEqual(recievedError as NSError?, deletionError)
+        expect(loader, toCompleteWithError: deletionError, when: {
+            store.completeDeletion(with: deletionError)
+        })
     }
     
     func test_save_failsOnInsertionError() {
-        let timestamp = Date()
-        let (store, loader) = makeSUT(currentDate: { timestamp })
-        
-        let items = [uniqueItem(), uniqueItem()]
-        let exp = XCTestExpectation()
-        
+        let (store, loader) = makeSUT()
         let insertionError = anyNSError()
         
-        var recievedError: Error?
-        loader.save(items: items) { error in
-            recievedError = error
-            exp.fulfill()
-        }
-        
-        store.completeDeletionSuccessfully()
-        store.completeInsertion(with: insertionError)
-        
-        wait(for: [exp], timeout: 1.0)
-        
-        XCTAssertEqual(recievedError as NSError?, insertionError)
+        expect(loader, toCompleteWithError: insertionError, when: {
+            store.completeDeletionSuccessfully()
+            store.completeInsertion(with: insertionError)
+        })
     }
     
     func test_save_succsedOnSuccessfulInsetion() {
-        let timestamp = Date()
-        let (store, loader) = makeSUT(currentDate: { timestamp })
+        let (store, loader) = makeSUT()
         
-        let items = [uniqueItem(), uniqueItem()]
+        expect(loader, toCompleteWithError: nil, when: {
+            store.completeDeletionSuccessfully()
+            store.completeInsertionSuccessfully()
+        })
+    }
+    
+    func expect(_ sut: LocalFeedLoder,
+                toCompleteWithError error: Error?,
+                when: ()->(),
+                file: StaticString = #file,
+                line: UInt = #line) {
+        
         let exp = XCTestExpectation()
         
         var recievedError: Error?
-        loader.save(items: items) {error in
+        sut.save(items: [uniqueItem(), uniqueItem()]) {error in
             recievedError = error
             exp.fulfill()
         }
         
-        store.completeDeletionSuccessfully()
-        store.completeInsertionSuccessfully()
+        when()
         
         wait(for: [exp], timeout: 1.0)
         
-        XCTAssertNil(recievedError)
+        XCTAssertEqual(error as NSError?, recievedError as NSError?, file:file, line: line)
     }
     
     func makeSUT(currentDate: @escaping () -> Date = Date.init) -> (FeedStore, LocalFeedLoder) {
