@@ -3,6 +3,7 @@ import Foundation
 public final class LocalFeedLoder {
     
     public typealias SaveResult = Error?
+    public typealias LoadResult = LoadFeedResult
     let feedStore: FeedStore
     let currentDate: () -> Date
     
@@ -11,8 +12,14 @@ public final class LocalFeedLoder {
         self.currentDate = currentDate
     }
     
-    public func load(completion: @escaping (Error?) -> ()) {
-        feedStore.retrive(completion: completion)
+    public func load(completion: @escaping (LoadResult) -> ()) {
+        feedStore.retrive { (error) in
+            if let error = error {
+                completion(.failure(error))
+            } else {
+                completion(.success([]))
+            }
+        }
     }
     
     public func save(items: [FeedImage], completion: @escaping (SaveResult) -> () = { _ in }) {

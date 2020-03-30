@@ -21,8 +21,13 @@ class LoadFeedFromCacheUseCaseTest: XCTestCase {
         let retrivalError = anyNSError()
         
         var receivedError: Error?
-        sut.load() { error in
-            receivedError = error
+        sut.load() { result in
+            switch result {
+            case let .failure(error):
+                receivedError = error
+            default:
+                XCTFail()
+            }
             exp.fulfill()
         }
         
@@ -31,6 +36,29 @@ class LoadFeedFromCacheUseCaseTest: XCTestCase {
         wait(for: [exp], timeout: 1.0)
         
         XCTAssertEqual(receivedError as NSError?, retrivalError)
+    }
+    
+    func test_load_deliversNoErrorOnEmptyCache() {
+        let (store, sut) = makeSUT()
+        let exp = XCTestExpectation(description: "Wait to retrival")
+        let retrivalError = anyNSError()
+        
+        var receivedFeed: [FeedImage]?
+        sut.load() { result in
+            switch result {
+            case let .success(feed):
+                receivedFeed = feed
+            default:
+                XCTFail()
+            }
+            exp.fulfill()
+        }
+        
+        store.completeWithEmptyCache()
+        
+        wait(for: [exp], timeout: 1.0)
+        
+        XCTAssertEqual(receivedFeed, [])
     }
     
     func makeSUT(currentDate: @escaping () -> Date = Date.init) -> (FeedStoreSpy, LocalFeedLoder) {
@@ -42,41 +70,41 @@ class LoadFeedFromCacheUseCaseTest: XCTestCase {
     }
     
     func expect(_ sut: LocalFeedLoder,
-                  toCompleteWithError error: Error?,
-                  when: ()->(),
-                  file: StaticString = #file,
-                  line: UInt = #line) {
-          
-          let exp = XCTestExpectation()
-          
-          var recievedError: Error?
-          sut.save(items: [uniqueItem(), uniqueItem()]) {error in
-              recievedError = error
-              exp.fulfill()
-          }
-          
-          when()
-          
-          wait(for: [exp], timeout: 1.0)
-          
-          XCTAssertEqual(error as NSError?, recievedError as NSError?, file:file, line: line)
-      }
-      
-      func uniqueItem() -> FeedImage {
-          return FeedImage(id: UUID(), description: "fds", location: "fds", url: URL(string: "http://some.url")!)
-      }
-      
-      
-      func uniqueItems() -> (models: [FeedImage], localRepresentation: [LocalFeedImage]) {
-          let items = [uniqueItem(), uniqueItem()]
-          let localItems = items.map{ LocalFeedImage(id: $0.id, description: $0.description, location: $0.location, url: $0.url)}
-          return (items, localItems)
-      }
-      
-      private func anyURL() -> URL {
-          return URL(string: "http://image.url")!
-      }
-      private func anyNSError() -> NSError {
-          return NSError(domain: "", code: 0, userInfo: nil)
-      }
+                toCompleteWithError error: Error?,
+                when: ()->(),
+                file: StaticString = #file,
+                line: UInt = #line) {
+        
+        let exp = XCTestExpectation()
+        
+        var recievedError: Error?
+        sut.save(items: [uniqueItem(), uniqueItem()]) {error in
+            recievedError = error
+            exp.fulfill()
+        }
+        
+        when()
+        
+        wait(for: [exp], timeout: 1.0)
+        
+        XCTAssertEqual(error as NSError?, recievedError as NSError?, file:file, line: line)
+    }
+    
+    func uniqueItem() -> FeedImage {
+        return FeedImage(id: UUID(), description: "fds", location: "fds", url: URL(string: "http://some.url")!)
+    }
+    
+    
+    func uniqueItems() -> (models: [FeedImage], localRepresentation: [LocalFeedImage]) {
+        let items = [uniqueItem(), uniqueItem()]
+        let localItems = items.map{ LocalFeedImage(id: $0.id, description: $0.description, location: $0.location, url: $0.url)}
+        return (items, localItems)
+    }
+    
+    private func anyURL() -> URL {
+        return URL(string: "http://image.url")!
+    }
+    private func anyNSError() -> NSError {
+        return NSError(domain: "", code: 0, userInfo: nil)
+    }
 }
