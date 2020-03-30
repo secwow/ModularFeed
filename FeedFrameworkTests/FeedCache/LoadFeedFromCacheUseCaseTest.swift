@@ -8,6 +8,31 @@ class LoadFeedFromCacheUseCaseTest: XCTestCase {
         XCTAssertEqual(store.recievedMessages, [])
     }
     
+    func test_load_requestsCacheRetrival() {
+        let (store, sut) = makeSUT()
+        sut.load() { _ in }
+        
+        XCTAssertEqual(store.recievedMessages, [.retrive])
+    }
+    
+    func test_load_failsOnRetrivalError() {
+        let (store, sut) = makeSUT()
+        let exp = XCTestExpectation(description: "Wait to retrival")
+        let retrivalError = anyNSError()
+        
+        var receivedError: Error?
+        sut.load() { error in
+            receivedError = error
+            exp.fulfill()
+        }
+        
+        store.completeRetrival(with: retrivalError)
+        
+        wait(for: [exp], timeout: 1.0)
+        
+        XCTAssertEqual(receivedError as NSError?, retrivalError)
+    }
+    
     func makeSUT(currentDate: @escaping () -> Date = Date.init) -> (FeedStoreSpy, LocalFeedLoder) {
         let store = FeedStoreSpy()
         let loader = LocalFeedLoder(with: store, currentDate: currentDate)
