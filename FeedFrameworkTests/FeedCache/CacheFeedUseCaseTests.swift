@@ -49,45 +49,6 @@ import FeedFramework
 //Saving error course (sad path):
 //System delivers error.
 
-class FeedStoreSpy: FeedStore {
-    typealias DeleteCacheCompletion = (Error?) -> ()
-    typealias InsertionCompletion = (Error?) -> ()
-    private var deletionCompletions: [DeleteCacheCompletion] = []
-    private var insertionCompletions: [InsertionCompletion] = []
-    private(set) var recievedMessages: [RecivedMessage] = []
-    
-    enum RecivedMessage: Equatable {
-        case deleteCacheFeedMessage
-        case insert([LocalFeedItem], Date)
-    }
-    
-    func deleteCachedFeed(completion: @escaping (Error?) -> ()) {
-        deletionCompletions.append(completion)
-        recievedMessages.append(.deleteCacheFeedMessage)
-    }
-    
-    func insert(_ feedItems: [LocalFeedItem], timestamp: Date, completion: @escaping InsertionCompletion) {
-        insertionCompletions.append(completion)
-        recievedMessages.append(.insert(feedItems, timestamp))
-    }
-    
-    func completeDeletion(with error: Error, at index: Int = 0) {
-        deletionCompletions[index](error)
-    }
-    
-    func completeDeletionSuccessfully(at index: Int = 0) {
-        deletionCompletions[index](nil)
-    }
-    
-    func completeInsertion(with error: Error, at index: Int = 0) {
-        insertionCompletions[index](error)
-    }
-    
-    func completeInsertionSuccessfully(at index: Int = 0) {
-        insertionCompletions[index](nil)
-    }
-}
-
 class CacheFeedUseCaseTests: XCTestCase {
     
     func test_init_doesnNotMessageDeleteUponCreation() {
@@ -216,14 +177,14 @@ class CacheFeedUseCaseTests: XCTestCase {
         return (store, loader)
     }
     
-    func uniqueItem() -> FeedItem {
-        return FeedItem(id: UUID(), description: "fds", location: "fds", imageURL: URL(string: "http://some.url")!)
+    func uniqueItem() -> FeedImage {
+        return FeedImage(id: UUID(), description: "fds", location: "fds", url: URL(string: "http://some.url")!)
     }
     
     
-    func uniqueItems() -> (models: [FeedItem], localRepresentation: [LocalFeedItem]) {
+    func uniqueItems() -> (models: [FeedImage], localRepresentation: [LocalFeedImage]) {
         let items = [uniqueItem(), uniqueItem()]
-        let localItems = items.map{ LocalFeedItem(id: $0.id, description: $0.description, location: $0.location, imageURL: $0.imageURL)}
+        let localItems = items.map{ LocalFeedImage(id: $0.id, description: $0.description, location: $0.location, url: $0.url)}
         return (items, localItems)
     }
     
