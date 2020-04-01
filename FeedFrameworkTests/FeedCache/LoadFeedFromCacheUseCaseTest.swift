@@ -74,6 +74,16 @@ class LoadFeedFromCacheUseCaseTest: XCTestCase {
         })
     }
     
+    func test_load_deleteOutdatedCache() {
+          let (store, sut) = makeSUT()
+        sut.load { (_) in
+            
+        }
+        
+        store.completeRetrival(with: anyNSError())
+        XCTAssertEqual(store.recievedMessages, [.retrive, .deleteCacheFeedMessage])
+    }
+    
     func makeSUT(currentDate: @escaping () -> Date = Date.init) -> (FeedStoreSpy, LocalFeedLoder) {
         let store = FeedStoreSpy()
         let loader = LocalFeedLoder(with: store, currentDate: currentDate)
