@@ -13,7 +13,9 @@ public final class LocalFeedLoder {
     }
     
     public func load(completion: @escaping (LoadResult) -> ()) {
-        feedStore.retrive {[unowned self] (result) in
+        feedStore.retrive {[weak self] (result) in
+            guard let self = self else { return }
+            
             switch result {
             case .failure(let error):
                 self.feedStore.deleteCachedFeed { (error) in
