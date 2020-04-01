@@ -2,9 +2,7 @@ import Foundation
 import FeedFramework
 
 class FeedStoreSpy: FeedStore {
-    typealias DeleteCacheCompletion = (Error?) -> ()
-    typealias InsertionCompletion = (Error?) -> ()
-    typealias RetrivalCompletion = (Error?) -> ()
+ 
     private var deletionCompletions: [DeleteCacheCompletion] = []
     private var insertionCompletions: [InsertionCompletion] = []
     private var retrivalCompletions: [RetrivalCompletion] = []
@@ -26,7 +24,7 @@ class FeedStoreSpy: FeedStore {
         recievedMessages.append(.insert(feedItems, timestamp))
     }
     
-    func retrive(completion: @escaping (Error?) -> ()) {
+    func retrive(completion: @escaping RetrivalCompletion) {
         self.retrivalCompletions.append(completion)
         recievedMessages.append(.retrive)
     }
@@ -48,10 +46,14 @@ class FeedStoreSpy: FeedStore {
     }
     
     func completeRetrival(with error: Error, at index: Int = 0) {
-        retrivalCompletions[index](error)
+        retrivalCompletions[index](.failure(error: error))
     }
     
     func completeWithEmptyCache(at index: Int = 0) {
-        retrivalCompletions[index](nil)
+        retrivalCompletions[index](.empty)
+    }
+    
+    func completeRetrival(with feed: [LocalFeedImage], timestamp: Date, at index: Int = 0) {
+        retrivalCompletions[index](.found(feed: feed, timestamp: timestamp))
     }
 }

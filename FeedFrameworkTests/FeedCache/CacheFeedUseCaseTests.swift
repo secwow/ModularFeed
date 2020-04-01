@@ -79,7 +79,7 @@ class CacheFeedUseCaseTests: XCTestCase {
         let timestamp = Date()
         let (store, loader) = makeSUT(currentDate: { timestamp })
         
-        let items = uniqueItems()
+        let items = uniqueImageFeed()
         loader.save(items: items.models)
         store.completeDeletionSuccessfully()
         XCTAssertEqual(store.recievedMessages, [.deleteCacheFeedMessage, .insert(items.localRepresentation, timestamp)])
@@ -177,12 +177,12 @@ class CacheFeedUseCaseTests: XCTestCase {
         return (store, loader)
     }
     
-    func uniqueItem() -> FeedImage {
+    private func uniqueItem() -> FeedImage {
         return FeedImage(id: UUID(), description: "fds", location: "fds", url: URL(string: "http://some.url")!)
     }
     
     
-    func uniqueItems() -> (models: [FeedImage], localRepresentation: [LocalFeedImage]) {
+    private func uniqueImageFeed() -> (models: [FeedImage], localRepresentation: [LocalFeedImage]) {
         let items = [uniqueItem(), uniqueItem()]
         let localItems = items.map{ LocalFeedImage(id: $0.id, description: $0.description, location: $0.location, url: $0.url)}
         return (items, localItems)
