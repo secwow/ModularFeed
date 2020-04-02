@@ -19,7 +19,7 @@ import XCTest
 //
 //- Side-effects must run serially to avoid race-conditions (deleting the wrong cache... overriding the latest data...)
 
-class CodableFeedStore {
+class CodableFeedStore: FeedStore {
     private struct Cache: Codable {
         let feed: [CodableFeedImage]
         let timestamp: Date
@@ -53,7 +53,7 @@ class CodableFeedStore {
         self.storeURL = storeURL
     }
     
-    func retrieve(completion: @escaping FeedStore.RetrivalCompletion) {
+    func retrieve(completion: @escaping RetrivalCompletion) {
         guard let data = try? Data(contentsOf: storeURL) else {
             completion(.empty)
             return
@@ -68,7 +68,7 @@ class CodableFeedStore {
         
     }
     
-    func insert(_ feedItems: [LocalFeedImage], timestamp: Date, completion: @escaping FeedStore.InsertionCompletion) {
+    func insert(_ feedItems: [LocalFeedImage], timestamp: Date, completion: @escaping InsertionCompletion) {
         let encoder = JSONEncoder()
         let cache = Cache(feed: feedItems.map(CodableFeedImage.init), timestamp: timestamp)
         let encoded = try! encoder.encode(cache)
