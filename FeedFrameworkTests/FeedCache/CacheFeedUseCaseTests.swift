@@ -57,103 +57,12 @@ class CacheFeedUseCaseTests: XCTestCase {
         XCTAssertEqual(store.recievedMessages, [])
     }
     
-    func test_load_deliversCachedImagesOnLessThanSevenDaysOldCache() {
-        let feed  = uniqueImageFeed()
-        let fixedCurrentDate = Date()
-        
-        let (store, sut) = makeSUT(currentDate: { fixedCurrentDate })
-        let lessThatSevenDaysOldTimestamp = fixedCurrentDate
-            .adding(days: -7)
-            .adding(seconds: 1)
-        
-        self.expect(sut, toCompleteWithResult: .success(feed.models), when: {
-            store.completeRetrival(with: feed.localRepresentation, timestamp: lessThatSevenDaysOldTimestamp)
-        })
-    }
-    
-    func test_load_deliversNoCachedImagesOnSevenDaysOldCache() {
-        let feed  = uniqueImageFeed()
-        let fixedCurrentDate = Date()
-        
-        let (store, sut) = makeSUT(currentDate: { fixedCurrentDate })
-        let sevenDaysOldTimestamp = fixedCurrentDate
-            .adding(days: -7)
-        
-        self.expect(sut, toCompleteWithResult: .success([]), when: {
-            store.completeRetrival(with: feed.localRepresentation, timestamp: sevenDaysOldTimestamp)
-        })
-    }
-    
-    func test_load_deliversNoCachedImagesOnMoreThanSevenDaysOldCache() {
-        let feed  = uniqueImageFeed()
-        let fixedCurrentDate = Date()
-        
-        let (store, sut) = makeSUT(currentDate: { fixedCurrentDate })
-        let noreThanSevenDaysOldTimestamp = fixedCurrentDate
-            .adding(days: -7)
-            .adding(seconds: -1)
-        
-        self.expect(sut, toCompleteWithResult: .success([]), when: {
-            store.completeRetrival(with: feed.localRepresentation, timestamp: noreThanSevenDaysOldTimestamp)
-        })
-    }
-    
-    func test_load_deleteOutdatedCache() {
+    func test_validateCache_onRetrivalError() {
         let (store, sut) = makeSUT()
-        sut.load { (_) in
-        }
-        
+
+        sut.validateCache()
         store.completeRetrival(with: anyNSError())
-        XCTAssertEqual(store.recievedMessages, [.retrive, .deleteCacheFeedMessage])
-    }
-    
-    func test_load_shouldNotDeleteCacheIfEmptyCache() {
-        let (store, sut) = makeSUT()
-        sut.load { (_) in
-            
-        }
-        
-        store.completeWithEmptyCache()
-        XCTAssertEqual(store.recievedMessages, [.retrive])
-    }
-    
-    func test_load_doesNotDeleteCacheOnLessThatSevenDaysOld() {
-        let feed  = uniqueImageFeed()
-        let fixedCurrentDate = Date()
-        let (store, sut) = makeSUT(currentDate: { fixedCurrentDate })
-        let lessThatSevenDaysOldTimestamp = fixedCurrentDate
-            .adding(days: -7)
-            .adding(seconds: 1)
-        sut.load { (_) in
-            
-        }
-        store.completeRetrival(with: feed.localRepresentation, timestamp: lessThatSevenDaysOldTimestamp)
-        XCTAssertEqual(store.recievedMessages, [.retrive])
-    }
-    
-    func test_load_shouldDeleteSevenDaysOldCache() {
-        let feed  = uniqueImageFeed()
-        let fixedCurrentDate = Date()
-        let (store, sut) = makeSUT(currentDate: { fixedCurrentDate })
-        let lessThatSevenDaysOldTimestamp = fixedCurrentDate
-            .adding(days: -7)
-        sut.load { (_) in
-            
-        }
-        store.completeRetrival(with: feed.localRepresentation, timestamp: lessThatSevenDaysOldTimestamp)
-        XCTAssertEqual(store.recievedMessages, [.retrive, .deleteCacheFeedMessage])
-    }
-    
-    func test_load_shouldDeleteCacheOnMoreThatSevenDaysOld() {
-        let feed  = uniqueImageFeed()
-        let fixedCurrentDate = Date()
-        let (store, sut) = makeSUT(currentDate: { fixedCurrentDate })
-        let lessThatSevenDaysOldTimestamp = fixedCurrentDate
-            .adding(days: -7).adding(seconds: -1)
-        sut.load { (_) in
-            
-        }
-        store.completeRetrival(with: feed.localRepresentation, timestamp: lessThatSevenDaysOldTimestamp)
+ 
         XCTAssertEqual(store.recievedMessages, [.retrive, .deleteCacheFeedMessage])
     }
     
