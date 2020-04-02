@@ -127,15 +127,41 @@ class CodableFeedStoreTests: XCTestCase {
         expect(sut, toRetrive: .failure(error: anyNSError()))
     }
     
-    func insert(_ feed: [LocalFeedImage], timestamp: Date, to sut: CodableFeedStore, file: StaticString = #file, line: UInt = #line) {
-        let exp = XCTestExpectation(description: "Wait to insert")
+    func test_retrive_deliversFailureHasNoSideEffectsOnError() {
+        let storeURL = testSpecificURL()
+        let sut = makeSUT(storeURL: storeURL)
         
+        try! "Invalid data".write(to: storeURL, atomically: true, encoding: .utf8)
+        expect(sut, toRetrieveTwice: .failure(error: anyNSError()))
+    }
+    
+    func test_retrive_overridesPreviouslyInsertedDataWithNew() {
+        let storeURL = testSpecificURL()
+        let sut = makeSUT(storeURL: storeURL)
+        
+        let firstInsertionError = insert(uniqueImageFeed().localRepresentation, timestamp: Date(), to: sut)
+        XCTAssertNil(firstInsertionError)
+        let latestFeed = uniqueImageFeed().localRepresentation
+        let latestTimestamp = Date()
+        let latestInsertionError = insert(latestFeed, timestamp: latestTimestamp, to: sut)
+      
+        XCTAssertNil(latestInsertionError)
+        expect(sut, toRetrieveTwice: .found(feed: latestFeed, timestamp: latestTimestamp))
+    }
+    
+    @discardableResult
+    func insert(_ feed: [LocalFeedImage], timestamp: Date, to sut: CodableFeedStore, file: StaticString = #file, line: UInt = #line) -> Error? {
+        let exp = XCTestExpectation(description: "Wait to insert")
+        var capturedError: Error?
         sut.insert(feed, timestamp: timestamp) { insertionError in
             XCTAssertNil(insertionError, file: file, line: line)
+            capturedError = insertionError
             exp.fulfill()
         }
         
         wait(for: [exp], timeout: 1.0)
+        
+        return capturedError
     }
     
     func makeSUT(storeURL: URL? = nil, file: StaticString = #file, line: UInt = #line) -> CodableFeedStore {
