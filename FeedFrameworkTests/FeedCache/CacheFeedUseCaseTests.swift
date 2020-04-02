@@ -68,15 +68,8 @@ class CacheFeedUseCaseTests: XCTestCase {
     
     func test_validate_shouldNotDeleteCacheIfEmptyCache() {
         let (store, sut) = makeSUT()
-        
-        let exp = XCTestExpectation(description: "Wait to validation")
-        sut.validateCache() {
-            exp.fulfill()
-        }
-        
+        sut.validateCache()
         store.completeWithEmptyCache()
-        
-        wait(for: [exp], timeout: 1.0)
         
         XCTAssertEqual(store.recievedMessages, [.retrive])
     }
