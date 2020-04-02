@@ -1,49 +1,22 @@
+//
+//  ValidateFeedCacheUseCase.swift
+//  FeedFrameworkTests
+//
+//  Created by AndAdmin on 02.04.2020.
+//  Copyright © 2020 AndAdmin. All rights reserved.
+//
+
+import Foundation
 import FeedFramework
 import XCTest
 
-class LoadFeedFromCacheUseCaseTest: XCTestCase {
+class ValidateFeedCacheUseCase: XCTestCase {
     func test_init_doesnNotMessageDeleteUponCreation() {
         let (store, _) = makeSUT()
         
         XCTAssertEqual(store.recievedMessages, [])
     }
     
-    func test_load_requestsCacheRetrival() {
-        let (store, sut) = makeSUT()
-        sut.load() { _ in }
-        
-        XCTAssertEqual(store.recievedMessages, [.retrive])
-    }
-    
-    func test_load_failsOnRetrivalError() {
-        let (store, sut) = makeSUT()
-        
-        let retrivalError = anyNSError()
-        
-        self.expect(sut, toCompleteWithResult: .failure(retrivalError), when: {
-            store.completeRetrival(with: retrivalError)
-        })
-    }
-    
-    func test_load_deliversNoErrorOnEmptyCache() {
-        let (store, sut) = makeSUT()
-        
-        self.expect(sut, toCompleteWithResult: .success([]), when: {
-            store.completeWithEmptyCache()
-        })
-    }
-    
-    func test_load_doesnNotDeliverValueAfterSUTHasBeenDeallocated() {
-        let store = FeedStoreSpy()
-        var sut: LocalFeedLoder? = LocalFeedLoder(with: store, currentDate: Date.init)
-        var recievedResults = [LocalFeedLoder.LoadResult]()
-        sut?.load(completion: { recievedResults.append($0)})
-        
-        sut = nil
-        
-        store.completeWithEmptyCache()
-        XCTAssertTrue(recievedResults.isEmpty)
-    }
     
     func makeSUT(currentDate: @escaping () -> Date = Date.init) -> (FeedStoreSpy, LocalFeedLoder) {
         let store = FeedStoreSpy()

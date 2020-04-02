@@ -57,116 +57,129 @@ class CacheFeedUseCaseTests: XCTestCase {
         XCTAssertEqual(store.recievedMessages, [])
     }
     
-    func test_save_requestCacheDeletion() {
-        let (store, loader) = makeSUT()
+    func test_load_deliversCachedImagesOnLessThanSevenDaysOldCache() {
+        let feed  = uniqueImageFeed()
+        let fixedCurrentDate = Date()
         
-        let items = [uniqueItem(), uniqueItem()]
-        loader.save(items: items)
-        XCTAssertEqual(store.recievedMessages, [.deleteCacheFeedMessage])
-    }
-    
-    func test_save_doesNotRequestCacheInsertionOnDeletionError() {
-        let (store, loader) = makeSUT()
+        let (store, sut) = makeSUT(currentDate: { fixedCurrentDate })
+        let lessThatSevenDaysOldTimestamp = fixedCurrentDate
+            .adding(days: -7)
+            .adding(seconds: 1)
         
-        let items = [uniqueItem(), uniqueItem()]
-        let deletionError = anyNSError()
-        loader.save(items: items)
-        store.completeDeletion(with: deletionError)
-        XCTAssertEqual(store.recievedMessages, [.deleteCacheFeedMessage])
-    }
-    
-    func test_save_requestsNewCacheInsertionWithTimestampOnSuccessfullDeletion() {
-        let timestamp = Date()
-        let (store, loader) = makeSUT(currentDate: { timestamp })
-        
-        let items = uniqueImageFeed()
-        loader.save(items: items.models)
-        store.completeDeletionSuccessfully()
-        XCTAssertEqual(store.recievedMessages, [.deleteCacheFeedMessage, .insert(items.localRepresentation, timestamp)])
-    }
-    
-    func test_save_failOnDeletionError() {
-        let timestamp = Date()
-        let (store, loader) = makeSUT(currentDate: { timestamp })
-        let deletionError = anyNSError()
-        
-        expect(loader, toCompleteWithError: deletionError, when: {
-            store.completeDeletion(with: deletionError)
+        self.expect(sut, toCompleteWithResult: .success(feed.models), when: {
+            store.completeRetrival(with: feed.localRepresentation, timestamp: lessThatSevenDaysOldTimestamp)
         })
     }
     
-    func test_save_failsOnInsertionError() {
-        let (store, loader) = makeSUT()
-        let insertionError = anyNSError()
+    func test_load_deliversNoCachedImagesOnSevenDaysOldCache() {
+        let feed  = uniqueImageFeed()
+        let fixedCurrentDate = Date()
         
-        expect(loader, toCompleteWithError: insertionError, when: {
-            store.completeDeletionSuccessfully()
-            store.completeInsertion(with: insertionError)
+        let (store, sut) = makeSUT(currentDate: { fixedCurrentDate })
+        let sevenDaysOldTimestamp = fixedCurrentDate
+            .adding(days: -7)
+        
+        self.expect(sut, toCompleteWithResult: .success([]), when: {
+            store.completeRetrival(with: feed.localRepresentation, timestamp: sevenDaysOldTimestamp)
         })
     }
     
-    func test_save_succsedOnSuccessfulInsetion() {
-        let (store, loader) = makeSUT()
+    func test_load_deliversNoCachedImagesOnMoreThanSevenDaysOldCache() {
+        let feed  = uniqueImageFeed()
+        let fixedCurrentDate = Date()
         
-        expect(loader, toCompleteWithError: nil, when: {
-            store.completeDeletionSuccessfully()
-            store.completeInsertionSuccessfully()
+        let (store, sut) = makeSUT(currentDate: { fixedCurrentDate })
+        let noreThanSevenDaysOldTimestamp = fixedCurrentDate
+            .adding(days: -7)
+            .adding(seconds: -1)
+        
+        self.expect(sut, toCompleteWithResult: .success([]), when: {
+            store.completeRetrival(with: feed.localRepresentation, timestamp: noreThanSevenDaysOldTimestamp)
         })
     }
     
-    func test_save_doesntDeliverSUTErrorAfterInstanceHasBeenDeallocated() {
-        let store = FeedStoreSpy()
-        var loader: LocalFeedLoder? = LocalFeedLoder(with: store, currentDate: Date.init)
-        
-        var recivedResults = [Error?]()
-        
-        loader?.save(items: [uniqueItem()]) { error in
-            recivedResults.append(error)
+    func test_load_deleteOutdatedCache() {
+        let (store, sut) = makeSUT()
+        sut.load { (_) in
         }
         
-        loader = nil
-        
-        store.completeDeletion(with: anyNSError())
-        XCTAssertTrue(recivedResults.isEmpty)
+        store.completeRetrival(with: anyNSError())
+        XCTAssertEqual(store.recievedMessages, [.retrive, .deleteCacheFeedMessage])
     }
     
-    func test_save_doesntDeliverSUTInsertionErrorAfterInstanceHasBeenDeallocated() {
-        let store = FeedStoreSpy()
-        var loader: LocalFeedLoder? = LocalFeedLoder(with: store, currentDate: Date.init)
-        
-        var recivedResults = [Error?]()
-        
-        loader?.save(items: [uniqueItem()]) { error in
-            recivedResults.append(error)
+    func test_load_shouldNotDeleteCacheIfEmptyCache() {
+        let (store, sut) = makeSUT()
+        sut.load { (_) in
+            
         }
         
-        store.completeDeletionSuccessfully()
-        
-        loader = nil
-        
-        store.completeInsertion(with: anyNSError())
-        XCTAssertTrue(recivedResults.isEmpty)
+        store.completeWithEmptyCache()
+        XCTAssertEqual(store.recievedMessages, [.retrive])
+    }
+    
+    func test_load_doesNotDeleteCacheOnLessThatSevenDaysOld() {
+        let feed  = uniqueImageFeed()
+        let fixedCurrentDate = Date()
+        let (store, sut) = makeSUT(currentDate: { fixedCurrentDate })
+        let lessThatSevenDaysOldTimestamp = fixedCurrentDate
+            .adding(days: -7)
+            .adding(seconds: 1)
+        sut.load { (_) in
+            
+        }
+        store.completeRetrival(with: feed.localRepresentation, timestamp: lessThatSevenDaysOldTimestamp)
+        XCTAssertEqual(store.recievedMessages, [.retrive])
+    }
+    
+    func test_load_shouldDeleteSevenDaysOldCache() {
+        let feed  = uniqueImageFeed()
+        let fixedCurrentDate = Date()
+        let (store, sut) = makeSUT(currentDate: { fixedCurrentDate })
+        let lessThatSevenDaysOldTimestamp = fixedCurrentDate
+            .adding(days: -7)
+        sut.load { (_) in
+            
+        }
+        store.completeRetrival(with: feed.localRepresentation, timestamp: lessThatSevenDaysOldTimestamp)
+        XCTAssertEqual(store.recievedMessages, [.retrive, .deleteCacheFeedMessage])
+    }
+    
+    func test_load_shouldDeleteCacheOnMoreThatSevenDaysOld() {
+        let feed  = uniqueImageFeed()
+        let fixedCurrentDate = Date()
+        let (store, sut) = makeSUT(currentDate: { fixedCurrentDate })
+        let lessThatSevenDaysOldTimestamp = fixedCurrentDate
+            .adding(days: -7).adding(seconds: -1)
+        sut.load { (_) in
+            
+        }
+        store.completeRetrival(with: feed.localRepresentation, timestamp: lessThatSevenDaysOldTimestamp)
+        XCTAssertEqual(store.recievedMessages, [.retrive, .deleteCacheFeedMessage])
     }
     
     func expect(_ sut: LocalFeedLoder,
-                toCompleteWithError error: Error?,
+                toCompleteWithResult expectedResult: LoadFeedResult,
                 when: ()->(),
                 file: StaticString = #file,
                 line: UInt = #line) {
         
         let exp = XCTestExpectation()
         
-        var recievedError: Error?
-        sut.save(items: [uniqueItem(), uniqueItem()]) {error in
-            recievedError = error
+        sut.load { (recievedResult) in
+            switch (recievedResult, expectedResult) {
+            case let(.success(recievedImages), .success(expectedResult)):
+                XCTAssertEqual(recievedImages, expectedResult, file: file, line: line)
+            case let (.failure(recievedError), .failure(expectedError)):
+                XCTAssertEqual(recievedError as NSError?, expectedError as NSError?, file: file, line: line)
+            default:
+                XCTFail()
+            }
             exp.fulfill()
         }
         
         when()
         
         wait(for: [exp], timeout: 1.0)
-        
-        XCTAssertEqual(error as NSError?, recievedError as NSError?, file:file, line: line)
     }
     
     func makeSUT(currentDate: @escaping () -> Date = Date.init) -> (FeedStoreSpy, LocalFeedLoder) {
@@ -195,4 +208,14 @@ class CacheFeedUseCaseTests: XCTestCase {
         return NSError(domain: "", code: 0, userInfo: nil)
     }
     
+}
+
+private extension Date {
+    func adding(days: Int) -> Date {
+        return Calendar(identifier: .gregorian).date(byAdding: .day, value: days, to: self)!
+    }
+    
+    func adding(seconds: Int) -> Date {
+        return Calendar(identifier: .gregorian).date(byAdding: .second, value: seconds, to: self)!
+    }
 }
