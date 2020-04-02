@@ -226,8 +226,6 @@ class CodableFeedStoreTests: XCTestCase {
             case let (.found(recievedFeed), .found(expectedFeed)):
                 XCTAssertEqual(recievedFeed.feed, expectedFeed.feed, file: file, line: line)
                 XCTAssertEqual(recievedFeed.timestamp, expectedFeed.timestamp, file: file, line: line)
-                //            case let (.failure(recievedError), .failure(expectedError)):
-            //                XCTAssertEqual(recievedError as NSError?, expectedError as NSError?, file: file, line: line)
             case (.empty, .empty), (.failure, .failure):
                 break
             default:
