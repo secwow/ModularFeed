@@ -1,11 +1,3 @@
-//
-//  ValidateFeedCacheUseCase.swift
-//  FeedFrameworkTests
-//
-//  Created by AndAdmin on 02.04.2020.
-//  Copyright © 2020 AndAdmin. All rights reserved.
-//
-
 import Foundation
 import FeedFramework
 import XCTest
