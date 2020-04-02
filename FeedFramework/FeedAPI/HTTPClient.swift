@@ -6,5 +6,7 @@ public enum HTTPClientResult {
 }
 
 public protocol HTTPClient {
+    /// Completion can be called at any Thread
+      /// Client are responsible for dispatch it on correct thread
     func get(from url: URL, completion: @escaping (HTTPClientResult) -> ())
 }
