@@ -21,9 +21,7 @@ public final class LocalFeedLoder {
                 completion(.failure(error))
             case let .found(feed, timestamp) where self.validate(date: timestamp):
                 completion(.success(feed.toModels()))
-            case .found:
-                completion(.success([]))
-            case .empty:
+            case .found, .empty:
                 completion(.success([]))
             }
         }
@@ -41,7 +39,8 @@ public final class LocalFeedLoder {
     }
     
     public func validateCache(completion: @escaping () -> () = {}) {
-        feedStore.retrive {[unowned self] (result) in
+        feedStore.retrive {[weak self] (result) in
+            guard let self = self else { return }
             switch result {
             case .empty:
                 break
