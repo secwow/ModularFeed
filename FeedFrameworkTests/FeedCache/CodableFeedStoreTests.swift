@@ -58,11 +58,15 @@ class CodableFeedStore {
             completion(.empty)
             return
         }
+        do {
+            let decoder = JSONDecoder()
+            let cache = try decoder.decode(Cache.self, from: data)
+            
+            completion(.found(feed: cache.localFeed, timestamp: cache.timestamp ))
+        } catch {
+            completion(.failure(error: error))
+        }
         
-        let decoder = JSONDecoder()
-        let cache = try! decoder.decode(Cache.self, from: data)
-        
-        completion(.found(feed: cache.localFeed, timestamp: cache.timestamp ))
     }
     
     func insert(_ feedItems: [LocalFeedImage], timestamp: Date, completion: @escaping FeedStore.InsertionCompletion) {
@@ -106,13 +110,20 @@ class CodableFeedStoreTests: XCTestCase {
         self.expect(sut, toRetrive: .found(feed: insertedFeed.localRepresentation, timestamp: timeStamp))
     }
     
-    func test_retrive_hasNoSideEffectsOnNonEmptyCache() {
+    func test_retrive_deliversFoundValueOnNonEmptyCache() {
         let sut = makeSUT()
         let timeStamp = Date()
         let insertedFeed = uniqueImageFeed()
         
         self.insert(insertedFeed.localRepresentation, timestamp: timeStamp, to: sut)
         self.expect(sut, toRetrieveTwice: .found(feed: insertedFeed.localRepresentation, timestamp: timeStamp))
+    }
+    
+    func test_retrive_deliversFailureOnRetrievalError() {
+        let sut = makeSUT()
+        
+        try! "Invalid data".write(to: testSpecificURL(), atomically: true, encoding: .utf8)
+        expect(sut, toRetrive: .failure(error: anyNSError()))
     }
     
     func insert(_ feed: [LocalFeedImage], timestamp: Date, to sut: CodableFeedStore, file: StaticString = #file, line: UInt = #line) {
@@ -144,13 +155,14 @@ class CodableFeedStoreTests: XCTestCase {
         let exp = XCTestExpectation()
         sut.retrieve { (recievedResult) in
             switch (recievedResult, expectedResult) {
-            case (.empty, .empty):
-                break
+          
             case let (.found(recievedFeed), .found(expectedFeed)):
                 XCTAssertEqual(recievedFeed.feed, expectedFeed.feed, file: file, line: line)
                 XCTAssertEqual(recievedFeed.timestamp, expectedFeed.timestamp, file: file, line: line)
-            case let (.failure(recievedError), .failure(expectedError)):
-                XCTAssertEqual(recievedError as NSError?, expectedError as NSError?, file: file, line: line)
+//            case let (.failure(recievedError), .failure(expectedError)):
+//                XCTAssertEqual(recievedError as NSError?, expectedError as NSError?, file: file, line: line)
+            case (.empty, .empty), (.failure, .failure):
+              break
             default:
                 XCTFail()
             }
