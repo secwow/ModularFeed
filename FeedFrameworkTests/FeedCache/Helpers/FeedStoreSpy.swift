@@ -24,7 +24,7 @@ class FeedStoreSpy: FeedStore {
         recievedMessages.append(.insert(feedItems, timestamp))
     }
     
-    func retrive(completion: @escaping RetrivalCompletion) {
+    func retrieve(completion: @escaping RetrivalCompletion) {
         self.retrivalCompletions.append(completion)
         recievedMessages.append(.retrive)
     }
