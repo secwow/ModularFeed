@@ -16,22 +16,26 @@ protocol FeedStoreSpecs {
     func test_storeSideEffects_runSerially()
 }
 
-protocol FailableRetrieveSpecs {
+protocol FailableRetrieveSpecs: FeedStoreSpecs {
     func test_retrive_deliversFailureOnRetrievalError()
     func test_retrive_deliversFailureHasNoSideEffectsOnError()
 }
 
-protocol FailableInsertSpecs {
+protocol FailableInsertSpecs: FeedStoreSpecs {
     func test_insert_deliversErrorOnInsertionError()
     func test_insert_hasNoSideEffectsOnInsertionError()
     func test_insert_overridesPreviouslyInsertedDataWithNewDeliversNoError()
 }
 
-protocol FailableDeleteSpecs {
+protocol FailableDeleteSpecs: FeedStoreSpecs {
     func test_delete_deliversErrorOnDeletionError()
 }
 
-class CodableFeedStoreTests: XCTestCase {
+protocol FailableCompostion: FailableDeleteSpecs, FailableInsertSpecs, FailableRetrieveSpecs {
+    
+}
+
+class CodableFeedStoreTests: XCTestCase, FailableCompostion {
     override func setUp() {
         super.tearDown()
         self.setupEmptyStore()
