@@ -178,6 +178,22 @@ class LoadFeedFromCacheUseCaseTest: XCTestCase {
         
         wait(for: [exp], timeout: 1.0)
     }
+    
+    private func setupEmptyStore() {
+        self.deleteStore()
+    }
+    
+    private func undoStoreSideEffects() {
+        self.deleteStore()
+    }
+    
+    private func deleteStore() {
+        try? FileManager.default.removeItem(at: testSpecificURL())
+    }
+    
+    private func testSpecificURL() -> URL {
+        return FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!.appendingPathComponent("\(type(of: self)).store")
+    }
 }
 
 
