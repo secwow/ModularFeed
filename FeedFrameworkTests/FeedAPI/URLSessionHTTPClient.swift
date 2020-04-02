@@ -77,16 +77,8 @@ class URLSessionHTTPClient: XCTestCase {
         XCTAssertEqual(recivedValues?.response?.statusCode, response.statusCode)
     }
     
-    private func anyURL() -> URL {
-        return URL(string: "http://image.url")!
-    }
-    
     private func anyData() -> Data {
         return Data("some".utf8)
-    }
-    
-    private func anyNSError() -> NSError {
-        return NSError(domain: "", code: 0, userInfo: nil)
     }
     
     private func anyHTTPURLResponse() -> HTTPURLResponse {

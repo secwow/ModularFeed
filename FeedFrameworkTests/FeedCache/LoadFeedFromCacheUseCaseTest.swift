@@ -33,7 +33,7 @@ class LoadFeedFromCacheUseCaseTest: XCTestCase {
         })
     }
     
-    func test_load_deliversCachedImagesOnLessThanSevenDaysOldCache() {
+    func test_load_hasNoSideEffectOnCachedImagesOnLessThanSevenDaysOldCache() {
         let feed  = uniqueImageFeed()
         let fixedCurrentDate = Date()
         
@@ -83,7 +83,7 @@ class LoadFeedFromCacheUseCaseTest: XCTestCase {
         XCTAssertEqual(store.recievedMessages, [.retrive])
     }
     
-    func test_load_shouldNotDeleteCacheIfEmptyCache() {
+    func test_load_hasNoSideEffectsOnCache() {
         let (store, sut) = makeSUT()
         sut.load { (_) in
             
@@ -176,33 +176,5 @@ class LoadFeedFromCacheUseCaseTest: XCTestCase {
         when()
         
         wait(for: [exp], timeout: 1.0)
-    }
-    
-    private func uniqueImage() -> FeedImage {
-        return FeedImage(id: UUID(), description: "fds", location: "fds", url: URL(string: "http://some.url")!)
-    }
-    
-    
-    private func uniqueImageFeed() -> (models: [FeedImage], localRepresentation: [LocalFeedImage]) {
-        let items: [FeedImage] = [uniqueImage(), uniqueImage()]
-        let localItems = items.map{ LocalFeedImage(id: $0.id, description: $0.description, location: $0.location, url: $0.url)}
-        return (items, localItems)
-    }
-    
-    private func anyURL() -> URL {
-        return URL(string: "http://image.url")!
-    }
-    private func anyNSError() -> NSError {
-        return NSError(domain: "", code: 0, userInfo: nil)
-    }
-}
-
-private extension Date {
-    func adding(days: Int) -> Date {
-        return Calendar(identifier: .gregorian).date(byAdding: .day, value: days, to: self)!
-    }
-    
-    func adding(seconds: Int) -> Date {
-        return Calendar(identifier: .gregorian).date(byAdding: .second, value: seconds, to: self)!
     }
 }

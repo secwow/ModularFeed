@@ -98,10 +98,6 @@ class RemoteFeedLoaderTests: XCTestCase {
         XCTAssertTrue(capturedResults.isEmpty)
     }
     
-    private func anyURL() -> URL {
-        return URL(string: "http://image.url")!
-    }
-    
     private func makeItem(id: UUID, description: String? = nil, location: String? = nil, imageURL: URL) -> (model: FeedImage, json: [String: Any]){
         let item = FeedImage(id: id, description: description, location: location, url: imageURL)
         let feedItemJSON = [

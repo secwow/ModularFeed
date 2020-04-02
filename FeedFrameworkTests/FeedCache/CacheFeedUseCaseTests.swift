@@ -66,6 +66,35 @@ class CacheFeedUseCaseTests: XCTestCase {
         XCTAssertEqual(store.recievedMessages, [.retrive, .deleteCacheFeedMessage])
     }
     
+    func test_validate_shouldNotDeleteCacheIfEmptyCache() {
+        let (store, sut) = makeSUT()
+        
+        let exp = XCTestExpectation(description: "Wait to validation")
+        sut.validateCache() {
+            exp.fulfill()
+        }
+        
+        store.completeWithEmptyCache()
+        
+        wait(for: [exp], timeout: 1.0)
+    
+        XCTAssertEqual(store.recievedMessages, [.retrive])
+    }
+    
+    func test_validateCache_doesNotDeleteCachedImagesLessThanSevenDaysOld() {
+        let feed  = uniqueImageFeed()
+        let fixedCurrentDate = Date()
+        
+        let (store, sut) = makeSUT(currentDate: { fixedCurrentDate })
+        let lessThatSevenDaysOldTimestamp = fixedCurrentDate
+            .adding(days: -7)
+            .adding(seconds: 1)
+    
+        sut.validateCache()
+        store.completeRetrival(with: feed.localRepresentation, timestamp: lessThatSevenDaysOldTimestamp)
+        XCTAssertEqual(store.recievedMessages, [.retrive])
+    }
+    
     func expect(_ sut: LocalFeedLoder,
                 toCompleteWithResult expectedResult: LoadFeedResult,
                 when: ()->(),
@@ -97,34 +126,5 @@ class CacheFeedUseCaseTests: XCTestCase {
         trackForMemoryLeak(object: store)
         trackForMemoryLeak(object: loader)
         return (store, loader)
-    }
-    
-    private func uniqueItem() -> FeedImage {
-        return FeedImage(id: UUID(), description: "fds", location: "fds", url: URL(string: "http://some.url")!)
-    }
-    
-    
-    private func uniqueImageFeed() -> (models: [FeedImage], localRepresentation: [LocalFeedImage]) {
-        let items = [uniqueItem(), uniqueItem()]
-        let localItems = items.map{ LocalFeedImage(id: $0.id, description: $0.description, location: $0.location, url: $0.url)}
-        return (items, localItems)
-    }
-    
-    private func anyURL() -> URL {
-        return URL(string: "http://image.url")!
-    }
-    private func anyNSError() -> NSError {
-        return NSError(domain: "", code: 0, userInfo: nil)
-    }
-    
-}
-
-private extension Date {
-    func adding(days: Int) -> Date {
-        return Calendar(identifier: .gregorian).date(byAdding: .day, value: days, to: self)!
-    }
-    
-    func adding(seconds: Int) -> Date {
-        return Calendar(identifier: .gregorian).date(byAdding: .second, value: seconds, to: self)!
     }
 }
