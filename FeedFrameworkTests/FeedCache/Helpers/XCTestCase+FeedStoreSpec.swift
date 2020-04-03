@@ -2,16 +2,15 @@ import XCTest
 import FeedFramework
 
 extension FeedStoreSpecs where Self: XCTestCase {
-    func assertThatRetriveDeliversEmptyOnEmptyCache(on sut: FeedStore) {
-        self.expect(sut, toRetrive: .empty)
+    func assertThatRetriveDeliversEmptyOnEmptyCache(on sut: FeedStore, file: StaticString = #file, line: UInt = #line) {
+        self.expect(sut, toRetrive: .empty, file: file, line: line)
     }
     
-    func assertThatRetriveHasNoSideEffectsOnEmptyCache(on sut: FeedStore) {
-        
-        self.expect(sut, toRetrieveTwice: .empty)
+    func assertThatRetriveHasNoSideEffectsOnEmptyCache(on sut: FeedStore, file: StaticString = #file, line: UInt = #line) {
+        self.expect(sut, toRetrieveTwice: .empty, file: file, line: line)
     }
     
-    func assertThatRetriveDeliversFoundValueOnNonEmptyCache(on sut: FeedStore) {
+    func assertThatRetriveDeliversFoundValueOnNonEmptyCache(on sut: FeedStore, file: StaticString = #file, line: UInt = #line) {
         let timeStamp = Date()
         let insertedFeed = uniqueImageFeed()
         
@@ -19,7 +18,7 @@ extension FeedStoreSpecs where Self: XCTestCase {
         self.expect(sut, toRetrieveTwice: .found(feed: insertedFeed.localRepresentation, timestamp: timeStamp))
     }
     
-    func assertThatInsertOverridesPreviouslyInsertedCacheValues(on sut: FeedStore) {
+    func assertThatInsertOverridesPreviouslyInsertedCacheValues(on sut: FeedStore , file: StaticString = #file, line: UInt = #line) {
         insert(uniqueImageFeed().localRepresentation, timestamp: Date(), to: sut)
         let latestFeed = uniqueImageFeed().localRepresentation
         let latestTimestamp = Date()
@@ -57,7 +56,7 @@ extension FeedStoreSpecs where Self: XCTestCase {
          expect(sut, toRetrive: .empty)
     }
     
-    func assertThatSideEffectRunSerially(on sut: FeedStore) {
+    func assertThatSideEffectRunSerially(on sut: FeedStore, file: StaticString = #file, line: UInt = #line) {
         let sut = makeSUT()
         var completedOperationInOrder = [XCTestExpectation]()
         
@@ -82,7 +81,7 @@ extension FeedStoreSpecs where Self: XCTestCase {
         
         waitForExpectations(timeout: 5.0)
         
-        XCTAssertEqual([op1, op2, op3], completedOperationInOrder)
+        XCTAssertEqual([op1, op2, op3], completedOperationInOrder, file: file, line: line)
     }
 }
 
@@ -123,16 +122,16 @@ extension FeedStoreSpecs where Self: XCTestCase {
         return sut
     }
     
-    func expect(_ sut: FeedStore, toRetrieveTwice result: RetrieveCachedFeedResult) {
-        self.expect(sut, toRetrive: result)
-        self.expect(sut, toRetrive: result)
+    func expect(_ sut: FeedStore, toRetrieveTwice result: RetrieveCachedFeedResult, file: StaticString = #file, line: UInt = #line) {
+        self.expect(sut, toRetrive: result, file: file, line: line)
+        self.expect(sut, toRetrive: result, file: file, line: line)
     }
     
     func expect(_ sut: FeedStore,
                 toRetrive expectedResult: RetrieveCachedFeedResult,
                 file: StaticString = #file,
                 line: UInt = #line) {
-        let exp = XCTestExpectation()
+        let exp = XCTestExpectation(description: "Waiting for retriving result")
         sut.retrieve { (recievedResult) in
             switch (recievedResult, expectedResult) {
                 
