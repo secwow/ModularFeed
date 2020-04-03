@@ -2,7 +2,7 @@ import FeedFramework
 import XCTest
 import CoreData
 
-class CoreDataFeedStoreTests: XCTestCase, FailableInsertFeedStoreSpecs, FailableDeleteFeedStoreSpecs {
+class CoreDataFeedStoreTests: XCTestCase, FeedStoreSpecs {
     
     func test_retrive_deliversEmptyOnEmptyCache() {
         let sut = makeSUT()
@@ -30,20 +30,10 @@ class CoreDataFeedStoreTests: XCTestCase, FailableInsertFeedStoreSpecs, Failable
         
     }
     
-    func test_insert_deliversErrorOnInsertionError() {
-        
-    }
-    
-    func test_insert_hasNoSideEffectsOnInsertionError() {
-        
-    }
-    
-    func test_insert_overridesPreviouslyInsertedDataWithNewDeliversNoError() {
-        
-    }
-    
     func test_insert_overridesPreviouslyInsertedCacheValues() {
+        let sut = makeSUT()
         
+        assertThatInsertOverridesPreviouslyInsertedCacheValues(on: sut)
     }
     
     func test_delete_hasNoSideEffectOnEmptyCache() {
