@@ -118,7 +118,7 @@ extension FeedStoreSpecs where Self: XCTestCase {
     }
     
     func makeSUT(storeURL: URL? = nil, file: StaticString = #file, line: UInt = #line) -> FeedStore {
-        let sut = CodableFeedStore(with: storeURL ?? testSpecificURL())
+        let sut = CodableFeedStore(with: storeURL ?? specificTestURL())
         trackForMemoryLeak(object: sut, file: file, line: line)
         return sut
     }
@@ -155,10 +155,10 @@ extension FeedStoreSpecs where Self: XCTestCase {
     }
 
     func deleteStore() {
-        try? FileManager.default.removeItem(at: testSpecificURL())
+        try? FileManager.default.removeItem(at: specificTestURL())
     }
     
-    func testSpecificURL() -> URL {
+    func specificTestURL() -> URL {
         return FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!.appendingPathComponent("\(type(of: self)).store")
     }
 }
