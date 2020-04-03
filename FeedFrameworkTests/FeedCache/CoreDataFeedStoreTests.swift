@@ -2,45 +2,24 @@ import FeedFramework
 import XCTest
 import CoreData
 
-class CoreDataFeedStore: FeedStore {
-    func deleteCachedFeed(completion: @escaping (Error?) -> ()) {
-        
-    }
+class CoreDataFeedStoreTests: XCTestCase, FailableInsertFeedStoreSpecs, FailableDeleteFeedStoreSpecs {
     
-    func insert(_ feedItems: [LocalFeedImage], timestamp: Date, completion: @escaping InsertionCompletion) {
-        
-    }
-    
-    func retrieve(completion: @escaping RetrivalCompletion) {
-        completion(.empty)
-    }
-}
-
-//extension NSManagedObjectContext {
-//
-//}
-
-class CoreDataFeedStoreTests: XCTestCase, FailableCompostion {
     func test_retrive_deliversEmptyOnEmptyCache() {
-        let sut = CoreDataFeedStore()
+        let sut = makeSUT()
         
         assertThatRetriveDeliversEmptyOnEmptyCache(on: sut)
     }
     
-    func test_retrive_deliversFailureOnRetrievalError() {
-        
-    }
-    
-    func test_retrive_deliversFailureHasNoSideEffectsOnError() {
-        
-    }
-    
     func test_retrive_hasNoSideEffectsOnEmptyCache() {
-        
+        let sut = makeSUT()
+                
+        assertThatRetriveHasNoSideEffectsOnEmptyCache(on: sut)
     }
     
     func test_retrive_deliversFoundValueOnNonEmptyCache() {
-        
+        let sut = makeSUT()
+                
+        assertThatRetriveDeliversFoundValueOnNonEmptyCache(on: sut)
     }
     
     func test_delete_deliversErrorOnDeletionError() {
@@ -79,9 +58,9 @@ class CoreDataFeedStoreTests: XCTestCase, FailableCompostion {
         
     }
     
-    func makeSUT(storeURL: URL? = nil, file: StaticString = #file, line: UInt = #line) -> FeedStore {
-        let sut = CoreDataFeedStore()
-        trackForMemoryLeak(object: sut )
+    func makeSUT(storeURL: URL = URL(fileURLWithPath: "/dev/null"), file: StaticString = #file, line: UInt = #line) -> FeedStore {
+        let sut = try! CoreDataFeedStore(with: storeURL, modelName: "FeedModel", bundle: Bundle(for: CoreDataFeedStore.self))
+//        trackForMemoryLeak(object: sut )
         return sut
     }
 }
