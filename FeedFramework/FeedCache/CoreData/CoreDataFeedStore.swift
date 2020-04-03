@@ -23,11 +23,18 @@ public class CoreDataFeedStore: FeedStore {
     }
     
     public func deleteCachedFeed(completion: @escaping (Error?) -> ()) {
-        
+        perform {
+            do {
+                try CoreDataCache.find(in: self.context).map(self.context.delete)
+                completion(nil)
+            } catch {
+                completion(error)
+            }
+        }
     }
     
     public func insert(_ feedItems: [LocalFeedImage], timestamp: Date, completion: @escaping InsertionCompletion) {
-        self.context.perform {
+        perform {
             do {
                 let cache = try CoreDataCache.createNewUniqueInstance(in: self.context)
                 cache.timestamp = timestamp
@@ -55,6 +62,12 @@ public class CoreDataFeedStore: FeedStore {
         }
         
     }
+    
+    private func perform(performBlock: @escaping () -> ()) {
+        self.context.perform {
+            performBlock()
+        }
+    }
 }
 
 private extension NSManagedObjectModel {
@@ -65,7 +78,7 @@ private extension NSManagedObjectModel {
     }
 }
 
-internal extension NSPersistentContainer {
+private extension NSPersistentContainer {
     enum LoadingError: Swift.Error {
         case modelNotFound
         case failedToLoadPersistentStores(Swift.Error)
