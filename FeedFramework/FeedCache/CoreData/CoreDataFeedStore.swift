@@ -9,8 +9,8 @@ public class CoreDataFeedStore: FeedStore {
     private let persistanceStoreContainer: NSPersistentContainer
     private let context: NSManagedObjectContext
     
-    public init(with storeURL: URL, modelName: String, bundle: Bundle) throws {
-        self.persistanceStoreContainer = try NSPersistentContainer.load(modelName: modelName, url: storeURL, in: Bundle(for: CoreDataCache.self))
+    public init(with storeURL: URL, bundle: Bundle) throws {
+        self.persistanceStoreContainer = try NSPersistentContainer.load(modelName: "FeedModel", url: storeURL, in: bundle)
         self.context = persistanceStoreContainer.newBackgroundContext()
     }
     
@@ -40,10 +40,7 @@ public class CoreDataFeedStore: FeedStore {
         }
     }
     
-    public func retrieve(completion: @escaping RetrivalCompletion) {
-        let request = NSFetchRequest<CoreDataCache>(entityName: CoreDataCache.entity().name!)
-        request.returnsObjectsAsFaults = false
-        
+    public func retrieve(completion: @escaping RetrivalCompletion) {        
         do {
             guard let cache = try CoreDataCache.find(in: self.context) else {
                 completion(.empty)

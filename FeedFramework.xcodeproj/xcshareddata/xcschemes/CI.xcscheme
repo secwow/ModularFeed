@@ -59,6 +59,16 @@
                ReferencedContainer = "container:FeedFramework.xcodeproj">
             </BuildableReference>
          </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "EFAE75122437C5130041D3B5"
+               BuildableName = "FeedFrameworkIntegrationTests.xctest"
+               BlueprintName = "FeedFrameworkIntegrationTests"
+               ReferencedContainer = "container:FeedFramework.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
       </Testables>
    </TestAction>
    <LaunchAction
