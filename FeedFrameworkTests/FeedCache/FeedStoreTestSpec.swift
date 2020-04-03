@@ -2,15 +2,13 @@ import Foundation
 
 protocol FeedStoreSpecs {
     func test_retrive_deliversEmptyOnEmptyCache()
-    func test_retrive_hasNoSideEffectsONEmptyCacheTwice()
-    func test_retrive_deliversInsertedValue()
+    func test_retrive_hasNoSideEffectsOnEmptyCache()
     func test_retrive_deliversFoundValueOnNonEmptyCache()
  
-    func test_insert_overridesPreviouslyInsertedDataWithNew()
-
+    func test_insert_overridesPreviouslyInsertedCacheValues()
 
     func test_delete_hasNoSideEffectOnEmptyCache()
-    func test_delete_deletePreviouslyInsertedCache()
+    func test_delete_emptiesPreviouslyInsertedCache()
 
     func test_storeSideEffects_runSerially()
 }

@@ -135,6 +135,8 @@
 				EF4647D12432894900CBA9CE /* FeedStoreSpy.swift */,
 				EF0C3B5D243670040063B07B /* XCTestCase+FailableInsertFeedStoreSpecs.swift */,
 				EF0C3B5F243670450063B07B /* XCTestCase+FailableRetrieveFeedStoreSpecs.swift */,
+				EF0C3B5724366AF00063B07B /* XCTestCase+FeedStoreSpec.swift */,
+				EF0C3B5B24366D270063B07B /* XCTestCase+FailableDeleteFeedStoreSpecs.swift */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
@@ -147,9 +149,7 @@
 				EF4647CE2432888700CBA9CE /* LoadFeedFromCacheUseCaseTest.swift */,
 				EF1B807A2435BC9600A1FAD4 /* ValidateFeedCacheUseCase.swift */,
 				EF5984AE24361DA100907256 /* CodableFeedStoreTests.swift */,
-				EF0C3B5724366AF00063B07B /* XCTestCase+FeedStoreSpec.swift */,
 				EF0C3B5924366C3D0063B07B /* FeedStoreTestSpec.swift */,
-				EF0C3B5B24366D270063B07B /* XCTestCase+FailableDeleteFeedStoreSpecs.swift */,
 			);
 			path = FeedCache;
 			sourceTree = "<group>";
