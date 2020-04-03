@@ -1,11 +1,3 @@
-//
-//  CoreDataFeedStore.swift
-//  FeedFramework
-//
-//  Created by AndAdmin on 03.04.2020.
-//  Copyright © 2020 AndAdmin. All rights reserved.
-//
-
 import CoreData
 
 public class CoreDataFeedStore: FeedStore {
@@ -23,9 +15,10 @@ public class CoreDataFeedStore: FeedStore {
     }
     
     public func deleteCachedFeed(completion: @escaping (Error?) -> ()) {
-        perform {
+        perform { context in
             do {
-                try CoreDataCache.find(in: self.context).map(self.context.delete)
+                try CoreDataCache.find(in: self.context)
+                                 .map(context.delete)
                 completion(nil)
             } catch {
                 completion(error)
@@ -34,11 +27,11 @@ public class CoreDataFeedStore: FeedStore {
     }
     
     public func insert(_ feedItems: [LocalFeedImage], timestamp: Date, completion: @escaping InsertionCompletion) {
-        perform {
+        perform { context in
             do {
                 let cache = try CoreDataCache.createNewUniqueInstance(in: self.context)
                 cache.timestamp = timestamp
-                cache.feed = CoreDataFeedImage.convertToManagedImages(localImages: feedItems, in: self.context)
+                cache.feed = CoreDataFeedImage.convertToManagedImages(localImages: feedItems, in: context)
                 try self.context.save()
                 completion(nil)
             } catch {
@@ -52,7 +45,7 @@ public class CoreDataFeedStore: FeedStore {
         request.returnsObjectsAsFaults = false
         
         do {
-            guard let cache = try self.context.fetch(request).first else {
+            guard let cache = try CoreDataCache.find(in: self.context) else {
                 completion(.empty)
                 return
             }
@@ -63,9 +56,10 @@ public class CoreDataFeedStore: FeedStore {
         
     }
     
-    private func perform(performBlock: @escaping () -> ()) {
-        self.context.perform {
-            performBlock()
+    private func perform(performBlock: @escaping (NSManagedObjectContext) -> ()) {
+        let context = self.context
+        context.perform {
+            performBlock(context)
         }
     }
 }
