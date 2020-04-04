@@ -2,6 +2,6 @@ import CoreData
 
 @objc(CoreDataCache)
 class CoreDataCache: NSManagedObject {
-    @NSManaged internal var timestamp: Date
-    @NSManaged internal var feed: NSOrderedSet
+    @NSManaged var timestamp: Date
+    @NSManaged var feed: NSOrderedSet
 }

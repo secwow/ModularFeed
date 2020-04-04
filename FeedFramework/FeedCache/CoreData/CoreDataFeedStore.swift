@@ -40,17 +40,18 @@ public class CoreDataFeedStore: FeedStore {
         }
     }
     
-    public func retrieve(completion: @escaping RetrivalCompletion) {        
-        do {
-            guard let cache = try CoreDataCache.find(in: self.context) else {
-                completion(.empty)
-                return
+    public func retrieve(completion: @escaping RetrivalCompletion) {
+         perform { context in
+            do {
+                guard let cache = try CoreDataCache.find(in: context) else {
+                    completion(.empty)
+                    return
+                }
+                completion(.found(feed: cache.localFeed, timestamp: cache.timestamp))
+            } catch {
+                completion(.failure(error: error))
             }
-            completion(.found(feed: cache.localFeed, timestamp: cache.timestamp))
-        } catch {
-            completion(.failure(error: error))
         }
-        
     }
     
     private func perform(performBlock: @escaping (NSManagedObjectContext) -> ()) {

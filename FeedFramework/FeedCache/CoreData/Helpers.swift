@@ -5,10 +5,12 @@ extension CoreDataCache {
         return self.feed.compactMap({$0 as? CoreDataFeedImage}).map({$0.local})
     }
     
-    internal static func find(in context: NSManagedObjectContext) throws -> CoreDataCache? {
-        let request = NSFetchRequest<CoreDataCache>(entityName: "CoreDataCache")
+    static func find(in context: NSManagedObjectContext) throws -> CoreDataCache? {
+        let request = NSFetchRequest<CoreDataCache>(entityName: entity().name!)
         request.returnsObjectsAsFaults = false
-        return try context.fetch(request).first
+        let result = try context.fetch(request)
+        
+        return result.first
     }
     
     static func createNewUniqueInstance(in context: NSManagedObjectContext) throws -> CoreDataCache {
