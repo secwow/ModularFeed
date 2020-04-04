@@ -70,7 +70,6 @@ class EssentialFeedCacheIntegrationTests: XCTestCase {
             if case let Result.failure(error) = saveResult {
                 XCTAssertNil(error, "Expected to save feed successfully", file: file, line: line)
             }
-            
             saveExp.fulfill()
         }
         wait(for: [saveExp], timeout: 5.0)
