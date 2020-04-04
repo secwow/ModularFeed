@@ -33,7 +33,7 @@ extension LocalFeedLoder {
 }
 
 extension LocalFeedLoder: FeedLoader {
-    public typealias LoadResult = LoadFeedResult
+    public typealias LoadResult = FeedLoader.Result
     
     public func load(completion: @escaping (LoadResult) -> ()) {
         feedStore.retrieve { [weak self] (result) in

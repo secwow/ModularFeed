@@ -30,7 +30,7 @@ class FeedFrameworkAPIEndToEndTests: XCTestCase {
     }
     
     private func getFeedResult(file:StaticString = #file,
-                               line: UInt = #line) -> LoadFeedResult? {
+                               line: UInt = #line) -> FeedLoader.Result? {
         let testServerURL = URL(string: "https://essentialdeveloper.com/feed-case-study/test-api/feed")!
         let session = URLSession(configuration: .ephemeral)
         let client = URLHTTPSessionClient(with: session)
@@ -40,7 +40,7 @@ class FeedFrameworkAPIEndToEndTests: XCTestCase {
         
         let exp = XCTestExpectation(description: "Wait result")
         
-        var recivedResult: LoadFeedResult?
+        var recivedResult: FeedLoader.Result?
         loader.load { (result) in
             recivedResult = result
             exp.fulfill()

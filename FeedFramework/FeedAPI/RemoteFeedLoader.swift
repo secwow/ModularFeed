@@ -12,7 +12,7 @@ public final class RemoteFeedLoader: FeedLoader {
     private let requestedURL: URL
     private let httpClient: HTTPClient
     
-    public typealias Result = LoadFeedResult
+    public typealias Result = FeedLoader.Result
     
     public enum Error: Swift.Error {
         case connectivity, invalidData
@@ -39,7 +39,7 @@ public final class RemoteFeedLoader: FeedLoader {
         }
     }
     
-    private static func map(_ data: Data, from response: HTTPURLResponse) -> LoadFeedResult {
+    private static func map(_ data: Data, from response: HTTPURLResponse) -> FeedLoader.Result {
         do {
             let items = try FeedItemsMapper.map(data, response)
             return .success(items.toModels())
