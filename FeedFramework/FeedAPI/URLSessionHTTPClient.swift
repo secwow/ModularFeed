@@ -9,13 +9,13 @@ public class URLHTTPSessionClient: HTTPClient {
     
     struct UnexpectedValuesRepresentedError: Error {}
     
-    public func get(from url: URL, completion: @escaping(HTTPClientResult) -> ()) {
+    public func get(from url: URL, completion: @escaping(HTTPClient.Result) -> ()) {
         self.session.dataTask(with: url) { (data, response, error)  in
             if let error = error {
                 completion(.failure(error))
                 return
             } else if let data = data, let response = response as? HTTPURLResponse {
-                completion(.success(data, response))
+                completion(.success((data, response)))
             } else {
                 completion(.failure(UnexpectedValuesRepresentedError()))
             }
