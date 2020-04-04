@@ -59,30 +59,24 @@ public class CodableFeedStore: FeedStore {
             let encoder = JSONEncoder()
             let cache = Cache(feed: feedItems.map(CodableFeedImage.init), timestamp: timestamp)
             let encoded = try! encoder.encode(cache)
-            do {
+            completion(Result {
                 try encoded.write(to: storeURL)
-                completion(nil)
-            } catch  {
-                completion(error)
-            }
+            })
         }
     }
     
-    public func deleteCachedFeed(completion: @escaping (Error?) -> ()) {
+    public func deleteCachedFeed(completion: @escaping (DeletionResult) -> ()) {
         let storeURL = self.storeURL
         
         queue.async(flags: .barrier) {
-            guard FileManager.default.fileExists(atPath: self.storeURL.path) else {
-                completion(nil)
-                return
-            }
+           
             
-            do {
-                try FileManager.default.removeItem(at: storeURL)
-                completion(nil)
-            } catch {
-                completion(error)
-            }
+            completion(Result {
+                guard FileManager.default.fileExists(atPath: self.storeURL.path) else {
+                               return
+                           }
+                  try FileManager.default.removeItem(at: storeURL)
+            })
         }
     }
 }

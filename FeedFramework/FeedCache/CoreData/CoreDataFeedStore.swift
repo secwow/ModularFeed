@@ -14,29 +14,23 @@ public class CoreDataFeedStore: FeedStore {
         self.context = persistanceStoreContainer.newBackgroundContext()
     }
     
-    public func deleteCachedFeed(completion: @escaping (Error?) -> ()) {
+    public func deleteCachedFeed(completion: @escaping (DeletionResult) -> ()) {
         perform { context in
-            do {
+            completion(Result {
                 try CoreDataCache.find(in: context)
-                                 .map(context.delete)
-                completion(nil)
-            } catch {
-                completion(error)
-            }
+                                               .map(context.delete)
+            })
         }
     }
     
     public func insert(_ feedItems: [LocalFeedImage], timestamp: Date, completion: @escaping InsertionCompletion) {
         perform { context in
-            do {
+            completion(Result {
                 let cache = try CoreDataCache.createNewUniqueInstance(in: context)
-                cache.timestamp = timestamp
-                cache.feed = CoreDataFeedImage.convertToManagedImages(localImages: feedItems, in: context)
-                try context.save()
-                completion(nil)
-            } catch {
-                completion(error)
-            }
+                  cache.timestamp = timestamp
+                  cache.feed = CoreDataFeedImage.convertToManagedImages(localImages: feedItems, in: context)
+                  try context.save()
+            })
         }
     }
     
