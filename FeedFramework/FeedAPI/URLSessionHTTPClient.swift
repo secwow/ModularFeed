@@ -11,15 +11,15 @@ public class URLHTTPSessionClient: HTTPClient {
     
     public func get(from url: URL, completion: @escaping(HTTPClient.Result) -> ()) {
         self.session.dataTask(with: url) { (data, response, error)  in
-            if let error = error {
-                completion(.failure(error))
-                return
-            } else if let data = data, let response = response as? HTTPURLResponse {
-                completion(.success((data, response)))
-            } else {
-                completion(.failure(UnexpectedValuesRepresentedError()))
-            }
-            
+            completion(Result {
+                if let error = error {
+                    throw error
+                } else if let data = data, let response = response as? HTTPURLResponse {
+                    return (data, response)
+                } else {
+                    throw UnexpectedValuesRepresentedError()
+                }
+            })
         }.resume()
     }
 }
