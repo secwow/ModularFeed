@@ -24,6 +24,11 @@
 			<key>orderHint</key>
 			<integer>2</integer>
 		</dict>
+		<key>ModularFeediOS.xcscheme_^#shared#^_</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>4</integer>
+		</dict>
 	</dict>
 	<key>SuppressBuildableAutocreation</key>
 	<dict>
@@ -43,6 +48,16 @@
 			<true/>
 		</dict>
 		<key>EFAE75122437C5130041D3B5</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>EFDFE235243A292B00389BC3</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>EFDFE23D243A292B00389BC3</key>
 		<dict>
 			<key>primary</key>
 			<true/>
