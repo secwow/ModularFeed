@@ -57,7 +57,6 @@ extension FeedStoreSpecs where Self: XCTestCase {
     }
     
     func assertThatSideEffectRunSerially(on sut: FeedStore, file: StaticString = #file, line: UInt = #line) {
-        let sut = makeSUT()
         var completedOperationInOrder = [XCTestExpectation]()
         
         let op1 = expectation(description: "Operation 1")
@@ -115,13 +114,7 @@ extension FeedStoreSpecs where Self: XCTestCase {
         wait(for: [exp], timeout: 3.0)
         
         return capturedError
-    }
-    
-    func makeSUT(storeURL: URL? = nil, file: StaticString = #file, line: UInt = #line) -> FeedStore {
-        let sut = CodableFeedStore(with: storeURL ?? specificTestURL())
-        trackForMemoryLeak(object: sut, file: file, line: line)
-        return sut
-    }
+    }   
     
     func expect(_ sut: FeedStore, toRetrieveTwice result: FeedStore.RetrievalCachedFeedResult, file: StaticString = #file, line: UInt = #line) {
         self.expect(sut, toRetrive: result, file: file, line: line)
