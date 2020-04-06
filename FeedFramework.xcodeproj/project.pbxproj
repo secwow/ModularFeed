@@ -49,6 +49,7 @@
 		EFDFE23F243A292B00389BC3 /* ModularFeediOS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EFDFE236243A292B00389BC3 /* ModularFeediOS.framework */; };
 		EFDFE244243A292B00389BC3 /* FeedViewControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFDFE243243A292B00389BC3 /* FeedViewControllerTests.swift */; };
 		EFDFED2D243B0799004D260B /* FeedViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFDFED2C243B0799004D260B /* FeedViewController.swift */; };
+		EFDFED30243B41E3004D260B /* FeedFramework.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EF90577F242BA50B0027ACC5 /* FeedFramework.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -167,6 +168,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				EFDFED30243B41E3004D260B /* FeedFramework.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -225,6 +227,7 @@
 				EFDFE237243A292B00389BC3 /* ModularFeediOS */,
 				EFDFE242243A292B00389BC3 /* ModularFeediOSTests */,
 				EF905780242BA50B0027ACC5 /* Products */,
+				EFDFED2F243B41E3004D260B /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -351,6 +354,13 @@
 				EFDFE245243A292B00389BC3 /* Info.plist */,
 			);
 			path = ModularFeediOSTests;
+			sourceTree = "<group>";
+		};
+		EFDFED2F243B41E3004D260B /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */

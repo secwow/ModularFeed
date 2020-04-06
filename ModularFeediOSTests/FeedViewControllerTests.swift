@@ -8,52 +8,16 @@
 
 import XCTest
 import FeedFramework
-
-class FeedViewController: UITableViewController {
-    
-    private var loader: FeedLoader?
-    
-    convenience init(loader: FeedViewControllerTests.LoaderSpy) {
-        self.init()
-        self.loader = loader
-    }
-    
-    
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        refreshControl = UIRefreshControl()
-        refreshControl?.addTarget(self, action: #selector(load), for: .valueChanged)
-        refreshControl?.beginRefreshing()
-        
-        load()
-    }
-    
-    
-    @objc func load() {
-        self.loader?.load(completion: { [weak self] _ in
-            self?.refreshControl?.endRefreshing()
-        })
-    }
-}
+import ModularFeediOS
 
 class FeedViewControllerTests: XCTestCase {
-    
-    func test_init_doesNotLoadFeed() {
-        let (_, loader) = makeSUT()
-        
-        XCTAssertEqual(loader.loadFeedCount, 0)
-    }
-    
     func test_viewDidLoad_loadFeed() {
         let (sut, loader) = makeSUT()
+        XCTAssertEqual(loader.loadFeedCount, 0)
         sut.loadViewIfNeeded()
         
         XCTAssertEqual(loader.loadFeedCount, 1)
-    }
-    
-    func test_pullToRefresh_loadFeed() {
-        let (sut, loader) = makeSUT()
-        sut.loadViewIfNeeded()
+        
         sut.simulatePullToRefresh()
         XCTAssertEqual(loader.loadFeedCount, 2)
         sut.simulatePullToRefresh()
