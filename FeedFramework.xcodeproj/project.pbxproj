@@ -47,7 +47,7 @@
 		EFAE75292437CEE00041D3B5 /* CoreDataCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFAE75282437CEE00041D3B5 /* CoreDataCache.swift */; };
 		EFDA35A6243728520013755D /* CoreDataFeedStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFDA35A5243728520013755D /* CoreDataFeedStoreTests.swift */; };
 		EFDFE23F243A292B00389BC3 /* ModularFeediOS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EFDFE236243A292B00389BC3 /* ModularFeediOS.framework */; };
-		EFDFE244243A292B00389BC3 /* ModularFeediOSTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFDFE243243A292B00389BC3 /* ModularFeediOSTests.swift */; };
+		EFDFE244243A292B00389BC3 /* FeedViewControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFDFE243243A292B00389BC3 /* FeedViewControllerTests.swift */; };
 		EFDFED2D243B0799004D260B /* FeedViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFDFED2C243B0799004D260B /* FeedViewController.swift */; };
 /* End PBXBuildFile section */
 
@@ -126,7 +126,7 @@
 		EFDFE236243A292B00389BC3 /* ModularFeediOS.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = ModularFeediOS.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		EFDFE239243A292B00389BC3 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		EFDFE23E243A292B00389BC3 /* ModularFeediOSTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ModularFeediOSTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		EFDFE243243A292B00389BC3 /* ModularFeediOSTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModularFeediOSTests.swift; sourceTree = "<group>"; };
+		EFDFE243243A292B00389BC3 /* FeedViewControllerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedViewControllerTests.swift; sourceTree = "<group>"; };
 		EFDFE245243A292B00389BC3 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		EFDFED2C243B0799004D260B /* FeedViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -347,7 +347,7 @@
 		EFDFE242243A292B00389BC3 /* ModularFeediOSTests */ = {
 			isa = PBXGroup;
 			children = (
-				EFDFE243243A292B00389BC3 /* ModularFeediOSTests.swift */,
+				EFDFE243243A292B00389BC3 /* FeedViewControllerTests.swift */,
 				EFDFE245243A292B00389BC3 /* Info.plist */,
 			);
 			path = ModularFeediOSTests;
@@ -658,7 +658,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				EFDFE244243A292B00389BC3 /* ModularFeediOSTests.swift in Sources */,
+				EFDFE244243A292B00389BC3 /* FeedViewControllerTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
