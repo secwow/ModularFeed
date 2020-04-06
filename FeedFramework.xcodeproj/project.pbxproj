@@ -48,7 +48,7 @@
 		EFDA35A6243728520013755D /* CoreDataFeedStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFDA35A5243728520013755D /* CoreDataFeedStoreTests.swift */; };
 		EFDFE23F243A292B00389BC3 /* ModularFeediOS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EFDFE236243A292B00389BC3 /* ModularFeediOS.framework */; };
 		EFDFE244243A292B00389BC3 /* ModularFeediOSTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFDFE243243A292B00389BC3 /* ModularFeediOSTests.swift */; };
-		EFDFE246243A292B00389BC3 /* ModularFeediOS.h in Headers */ = {isa = PBXBuildFile; fileRef = EFDFE238243A292B00389BC3 /* ModularFeediOS.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		EFDFED2D243B0799004D260B /* FeedViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFDFED2C243B0799004D260B /* FeedViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -124,11 +124,11 @@
 		EFAE75282437CEE00041D3B5 /* CoreDataCache.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoreDataCache.swift; sourceTree = "<group>"; };
 		EFDA35A5243728520013755D /* CoreDataFeedStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataFeedStoreTests.swift; sourceTree = "<group>"; };
 		EFDFE236243A292B00389BC3 /* ModularFeediOS.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = ModularFeediOS.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		EFDFE238243A292B00389BC3 /* ModularFeediOS.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ModularFeediOS.h; sourceTree = "<group>"; };
 		EFDFE239243A292B00389BC3 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		EFDFE23E243A292B00389BC3 /* ModularFeediOSTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ModularFeediOSTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		EFDFE243243A292B00389BC3 /* ModularFeediOSTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModularFeediOSTests.swift; sourceTree = "<group>"; };
 		EFDFE245243A292B00389BC3 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		EFDFED2C243B0799004D260B /* FeedViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -338,8 +338,8 @@
 		EFDFE237243A292B00389BC3 /* ModularFeediOS */ = {
 			isa = PBXGroup;
 			children = (
-				EFDFE238243A292B00389BC3 /* ModularFeediOS.h */,
 				EFDFE239243A292B00389BC3 /* Info.plist */,
+				EFDFED2C243B0799004D260B /* FeedViewController.swift */,
 			);
 			path = ModularFeediOS;
 			sourceTree = "<group>";
@@ -367,7 +367,6 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				EFDFE246243A292B00389BC3 /* ModularFeediOS.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -507,6 +506,7 @@
 					};
 					EFDFE235243A292B00389BC3 = {
 						CreatedOnToolsVersion = 11.3.1;
+						LastSwiftMigration = 1130;
 					};
 					EFDFE23D243A292B00389BC3 = {
 						CreatedOnToolsVersion = 11.3.1;
@@ -650,6 +650,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				EFDFED2D243B0799004D260B /* FeedViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -978,6 +979,7 @@
 		EFDFE248243A292B00389BC3 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				DEFINES_MODULE = YES;
 				DEVELOPMENT_TEAM = DX34ZZXSN8;
@@ -996,6 +998,7 @@
 				PRODUCT_NAME = ModularFeediOS;
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -1004,6 +1007,7 @@
 		EFDFE249243A292B00389BC3 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				DEFINES_MODULE = YES;
 				DEVELOPMENT_TEAM = DX34ZZXSN8;
@@ -1031,6 +1035,7 @@
 		EFDFE24B243A292B00389BC3 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = DX34ZZXSN8;
 				INFOPLIST_FILE = ModularFeediOSTests/Info.plist;
@@ -1051,6 +1056,7 @@
 		EFDFE24C243A292B00389BC3 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = DX34ZZXSN8;
 				INFOPLIST_FILE = ModularFeediOSTests/Info.plist;
