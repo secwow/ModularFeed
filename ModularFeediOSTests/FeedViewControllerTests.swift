@@ -114,12 +114,37 @@ class FeedViewControllerTests: XCTestCase {
         let view1 = sut.simulateImageFeedViewVisible(at: 1)
         XCTAssertEqual(view0?.isShowingImageLoadingIndicator, true)
         XCTAssertEqual(view1?.isShowingImageLoadingIndicator, true)
+        
         loader.completeImageLoading(at: 0)
         XCTAssertEqual(view0?.isShowingImageLoadingIndicator, false)
         XCTAssertEqual(view1?.isShowingImageLoadingIndicator, true)
+        
         loader.completeImageLoadingWithError(at: 1)
         XCTAssertEqual(view0?.isShowingImageLoadingIndicator, false)
         XCTAssertEqual(view1?.isShowingImageLoadingIndicator, false)
+    }
+    
+    func test_feedImageView_rendersImageLoadedFromURL() {
+        let (sut, loader) = makeSUT()
+        let image = makeImage()
+        let image2 = makeImage()
+        
+        sut.loadViewIfNeeded()
+        loader.completeLoad(with: .success([image, image2]), at: 0)
+        let view0 = sut.simulateImageFeedViewVisible(at: 0)
+        let view1 = sut.simulateImageFeedViewVisible(at: 1)
+        XCTAssertEqual(view0?.renderedImage, .none)
+        XCTAssertEqual(view1?.renderedImage, .none)
+        
+        let imageData0 = UIImage.make(withColor: .blue).pngData()!
+        loader.completeImageLoading(with:imageData0, at: 0)
+        XCTAssertEqual(view0?.renderedImage, imageData0)
+        XCTAssertEqual(view1?.renderedImage, .none)
+        
+        let imageData1 = UIImage.make(withColor: .red).pngData()!
+        loader.completeImageLoading(with:imageData1, at: 1)
+        XCTAssertEqual(view0?.renderedImage, imageData0)
+        XCTAssertEqual(view1?.renderedImage, imageData1)
     }
     
     func makeSUT(file: StaticString = #file, line: UInt = #line) -> (FeedViewController, LoaderSpy) {
@@ -200,5 +225,18 @@ class FeedViewControllerTests: XCTestCase {
             self.imageRequests.append((url, completion))
             return TaskSpy { [weak self] in self?.cancelledImageURLs.append(url) }
         }
+    }
+}
+
+private extension UIImage {
+    static func make(withColor color: UIColor) -> UIImage {
+        let rect = CGRect(x: 0, y: 0, width: 1, height: 1)
+        UIGraphicsBeginImageContext(rect.size)
+        let context = UIGraphicsGetCurrentContext()!
+        context.setFillColor(color.cgColor)
+        context.fill(rect)
+        let img = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext()
+        return img!
     }
 }
