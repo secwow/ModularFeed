@@ -54,6 +54,7 @@
 		EFDFED33243B76DD004D260B /* FeedImageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFDFED32243B76DD004D260B /* FeedImageCell.swift */; };
 		EFDFED35243B779B004D260B /* UIView+Animations.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFDFED34243B779B004D260B /* UIView+Animations.swift */; };
 		EFDFED36243B7AA4004D260B /* XCTestCase+TrackMemoryLeaks.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF9057A9242E1FD10027ACC5 /* XCTestCase+TrackMemoryLeaks.swift */; };
+		EFDFED38243BA366004D260B /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFDFED37243BA366004D260B /* Utils.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -136,6 +137,7 @@
 		EFDFED2C243B0799004D260B /* FeedViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedViewController.swift; sourceTree = "<group>"; };
 		EFDFED32243B76DD004D260B /* FeedImageCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedImageCell.swift; sourceTree = "<group>"; };
 		EFDFED34243B779B004D260B /* UIView+Animations.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+Animations.swift"; sourceTree = "<group>"; };
+		EFDFED37243BA366004D260B /* Utils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Utils.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -360,6 +362,7 @@
 			children = (
 				EFDFE243243A292B00389BC3 /* FeedViewControllerTests.swift */,
 				EFDFE245243A292B00389BC3 /* Info.plist */,
+				EFDFED37243BA366004D260B /* Utils.swift */,
 			);
 			path = ModularFeediOSTests;
 			sourceTree = "<group>";
@@ -681,6 +684,7 @@
 				EFDFED31243B74BC004D260B /* FeedCacheTestHelpers.swift in Sources */,
 				EFDFE244243A292B00389BC3 /* FeedViewControllerTests.swift in Sources */,
 				EFDFED36243B7AA4004D260B /* XCTestCase+TrackMemoryLeaks.swift in Sources */,
+				EFDFED38243BA366004D260B /* Utils.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

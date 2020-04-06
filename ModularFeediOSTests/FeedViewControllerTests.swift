@@ -89,6 +89,20 @@ class FeedViewControllerTests: XCTestCase {
         XCTAssertEqual(loader.loadedImageURLs, [image.url, image2.url])
     }
     
+    func test_feedImageView_cancelsImageLoadingWhenNotVisibleAnymore() {
+        let (sut, loader) = makeSUT()
+        let image = makeImage(url: URL(string: "http://url-1.com")!)
+        let image2 = makeImage(url: URL(string: "http://url-2.com")!)
+        
+        sut.loadViewIfNeeded()
+        loader.completeLoad(with: .success([image, image2]), at: 0)
+        XCTAssertEqual(loader.cancelledImageURLs, [])
+        sut.simulateFeedImageViewNotVisible(at: 0)
+        XCTAssertEqual(loader.cancelledImageURLs, [image.url])
+        sut.simulateFeedImageViewNotVisible(at: 1)
+        XCTAssertEqual(loader.cancelledImageURLs, [image.url, image2.url])
+    }
+    
     func makeSUT(file: StaticString = #file, line: UInt = #line) -> (FeedViewController, LoaderSpy) {
         let loader = LoaderSpy()
         let sut = FeedViewController(loader: loader, imageLoader: loader)
@@ -96,6 +110,7 @@ class FeedViewControllerTests: XCTestCase {
         trackForMemoryLeak(object: sut)
         return (sut, loader)
     }
+    
     
     private func assertThat(_ sut: FeedViewController, isRendering feed: [FeedImage], file: StaticString = #file, line: UInt = #line) {
         guard sut.numberRenderedFeedImageViews == feed.count else {
@@ -127,10 +142,9 @@ class FeedViewControllerTests: XCTestCase {
     }
     
     class LoaderSpy: FeedLoader, FeedImageDataLoader {
-
-        
         private var loadCompletions = [(FeedLoader.Result) -> ()]()
         var loadedImageURLs: [URL] = []
+        var cancelledImageURLs: [URL] = []
         
         var loadFeedCount: Int {
             return self.loadCompletions.count
@@ -147,83 +161,9 @@ class FeedViewControllerTests: XCTestCase {
         func loadImageData(from url: URL) {
             self.loadedImageURLs.append(url)
         }
-    }
-}
-
-extension FeedViewController {
-    func simulatePullLoading() {
-        refreshControl?.simulatePullToRefresh()
-    }
-    
-    var isShownLoadingIndicator: Bool {
-        return refreshControl?.isRefreshing == true
-    }
-    
-    var numberRenderedFeedImageViews: Int {
-        return tableView.numberOfRows(inSection: feedImageSection)
-    }
-    
-    var feedImageSection: Int {
-        return 0
-    }
-    
-    func feedImageView(at: Int) -> UITableViewCell? {
-        let ds = tableView.dataSource
-        let index = IndexPath(row: at, section: 0)
-        return ds?.tableView(tableView, cellForRowAt: index)
-    }
-    
-    func simulateImageFeedViewVisible(at index: Int) {
-        _ = feedImageView(at: index)
-    }
-}
-
-private extension FeedImageViewCell {
-    func simulateRetryAction() {
-        feedImageRetryButton.simulateTap()
-    }
-    
-    var isShowingLocation: Bool {
-        return !locationContainer.isHidden
-    }
-    
-    var isShowingImageLoadingIndicator: Bool {
-        return feedImageContainer.isShimmering
-    }
-    
-    var isShowingRetryAction: Bool {
-        return !feedImageRetryButton.isHidden
-    }
-    
-    var locationText: String? {
-        return locationLabel.text
-    }
-    
-    var descriptionText: String? {
-        return descriptionLabel.text
-    }
-    
-    var renderedImage: Data? {
-        return feedImageView.image?.pngData()
-    }
-}
-
-private extension  UIRefreshControl {
-    func simulatePullToRefresh() {
-        allTargets.forEach({ target in
-            actions(forTarget: target, forControlEvent: .valueChanged)?.forEach({ (selector) in
-                (target as NSObject).perform(Selector(selector))
-            })
-        })
-    }
-}
-
-private extension  UIButton {
-    func simulateTap() {
-        allTargets.forEach({ target in
-            actions(forTarget: target, forControlEvent: .touchUpInside)?.forEach({ (selector) in
-                (target as NSObject).perform(Selector(selector))
-            })
-        })
+        
+        func cancelImageDataLoad(from url: URL) {
+            self.cancelledImageURLs.append(url)
+        }
     }
 }
