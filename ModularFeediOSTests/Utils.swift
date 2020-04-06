@@ -44,6 +44,14 @@ extension FeedViewController {
         let index = IndexPath(row: row, section: 0)
         ds?.tableView(tableView, prefetchRowsAt: [index])
     }
+    
+    func simulateFeedImageViewNotNearVisible(at row: Int) {
+        simulateFeedImageViewNearVisible(at: row)
+        
+        let ds = tableView.prefetchDataSource
+        let index = IndexPath(row: row, section: 0)
+        ds?.tableView?(tableView, cancelPrefetchingForRowsAt: [index])
+    }
 }
 
 extension FeedImageViewCell {

@@ -214,7 +214,22 @@ class FeedViewControllerTests: XCTestCase {
         loader.completeLoad(with: .success([image, image2]), at: 0)
         XCTAssertEqual(loader.loadedImageURLs, [])
         
-        sut.simulateFeedImageViewNearVisible(at: 0)
+        sut.simulateFeedImageViewNotVisible(at: 0)
+        XCTAssertEqual(loader.loadedImageURLs, [image.url])
+        sut.simulateFeedImageViewNotVisible(at: 1)
+        XCTAssertEqual(loader.loadedImageURLs, [image.url, image2.url])
+    }
+    
+    func test_feedImageView_cancelImageLoadingWhenViewNotNearVisible() {
+        let (sut, loader) = makeSUT()
+        let image = makeImage()
+        let image2 = makeImage()
+        
+        sut.loadViewIfNeeded()
+        loader.completeLoad(with: .success([image, image2]), at: 0)
+        XCTAssertEqual(loader.loadedImageURLs, [])
+        
+        sut.simulateFeedImageViewNotNearVisible(at: 0)
     }
     
     func makeSUT(file: StaticString = #file, line: UInt = #line) -> (FeedViewController, LoaderSpy) {
