@@ -13,6 +13,7 @@ public final class FeedViewController: UITableViewController {
     
     public override func viewDidLoad() {
         super.viewDidLoad()
+        
         refreshControl = UIRefreshControl()
         refreshControl?.addTarget(self, action: #selector(load), for: .valueChanged)
         refreshControl?.beginRefreshing()
