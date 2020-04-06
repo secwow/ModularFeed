@@ -183,6 +183,28 @@ class FeedViewControllerTests: XCTestCase {
         XCTAssertEqual(view0?.isShowingRetryAction, true)
     }
     
+    func test_feedImageViewRetryAction_retriesImageLoad() {
+        let (sut, loader) = makeSUT()
+        let image = makeImage()
+        let image2 = makeImage()
+        
+        sut.loadViewIfNeeded()
+        loader.completeLoad(with: .success([image, image2]), at: 0)
+        let view0 = sut.simulateImageFeedViewVisible(at: 0)
+        let view1 = sut.simulateImageFeedViewVisible(at: 1)
+        XCTAssertEqual(loader.loadedImageURLs, [image.url, image2.url])
+        
+        loader.completeImageLoadingWithError(at: 0)
+        loader.completeImageLoadingWithError(at: 1)
+        XCTAssertEqual(loader.loadedImageURLs, [image.url, image2.url])
+        
+        view0?.simulateRetryAction()
+        XCTAssertEqual(loader.loadedImageURLs, [image.url, image2.url, image.url])
+        
+        view1?.simulateRetryAction()
+        XCTAssertEqual(loader.loadedImageURLs,  [image.url, image2.url, image.url, image2.url])
+    }
+    
     func makeSUT(file: StaticString = #file, line: UInt = #line) -> (FeedViewController, LoaderSpy) {
         let loader = LoaderSpy()
         let sut = FeedViewController(loader: loader, imageLoader: loader)
@@ -254,7 +276,7 @@ class FeedViewControllerTests: XCTestCase {
         }
         
         func completeImageLoadingWithError(at index: Int) {
-             imageRequests[index].completion(.failure(anyNSError()))
+            imageRequests[index].completion(.failure(anyNSError()))
         }
         
         func loadImageData(from url: URL, completion: @escaping (FeedImageDataLoader.Result) -> ()) -> FeedImageDataLoaderTask {
