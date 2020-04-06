@@ -2,12 +2,88 @@ import Foundation
 import FeedFramework
 import XCTest
 
+//### Validate Feed Cache Use Case
+//
+//#### Primary course:
+//1. Execute "Validate Cache" command with above data.
+//2. System retrieves feed data from cache.
+//3. System validates cache is less than seven days old.
+//
+//#### Retrieval error course (sad path):
+//1. System deletes cache.
+//
+//#### Expired cache course (sad path):
+//1. System deletes cache.
+
+
 class ValidateFeedCacheUseCase: XCTestCase {
     func test_init_doesnNotMessageDeleteUponCreation() {
         let (store, _) = makeSUT()
         
         XCTAssertEqual(store.recievedMessages, [])
     }
+    
+    func test_validate_doesNotDeleteEmptyCache() {
+        let (store, sut) = makeSUT()
+        sut.validateCache()
+        XCTAssertEqual(store.recievedMessages, [.retrive])
+    }
+    
+    func test_validate_deleteCacheOnRetrievError() {
+        let fixedCurrentDate = Date()
+        let (store, sut) = makeSUT(currentDate: { fixedCurrentDate })
+
+        sut.validateCache()
+        store.completeRetrival(with: anyNSError())
+        XCTAssertEqual(store.recievedMessages, [.retrive, .deleteCacheFeedMessage])
+    }
+     
+     func test_validate_doesNotDeleteCacheOnNonExpiredCache() {
+         let feed  = uniqueImageFeed()
+         let fixedCurrentDate = Date()
+         let (store, sut) = makeSUT(currentDate: { fixedCurrentDate })
+         let experationTimeStamp = fixedCurrentDate
+             .minusFeedCacheMaxAge()
+             .adding(seconds: 1)
+         sut.validateCache()
+         store.completeRetrival(with: feed.localRepresentation, timestamp: experationTimeStamp)
+         XCTAssertEqual(store.recievedMessages, [.retrive])
+     }
+     
+     func test_validate_hasNoSideEffectsOnCacheExpiration() {
+         let feed  = uniqueImageFeed()
+         let fixedCurrentDate = Date()
+         let (store, sut) = makeSUT(currentDate: { fixedCurrentDate })
+         let experationTimeStamp = fixedCurrentDate
+             .minusFeedCacheMaxAge()
+        sut.validateCache()
+        store.completeRetrival(with: feed.localRepresentation, timestamp: experationTimeStamp)
+        XCTAssertEqual(store.recievedMessages, [.retrive, .deleteCacheFeedMessage])
+     }
+     
+     func test_validate_hasNoSideOnExpiredCache() {
+         let feed  = uniqueImageFeed()
+         let fixedCurrentDate = Date()
+         let (store, sut) = makeSUT(currentDate: { fixedCurrentDate })
+         let experationTimeStamp = fixedCurrentDate
+             .minusFeedCacheMaxAge()
+             .adding(seconds: -1)
+         sut.validateCache()
+         store.completeRetrival(with: feed.localRepresentation, timestamp: experationTimeStamp)
+         XCTAssertEqual(store.recievedMessages, [.retrive, .deleteCacheFeedMessage])
+     }
+     
+     func test_validate_doesnNotDeliverValueAfterSUTHasBeenDeallocated() {
+         let store = FeedStoreSpy()
+         var sut: LocalFeedLoder? = LocalFeedLoder(with: store, currentDate: Date.init)
+         var recievedResults = [LocalFeedLoder.LoadResult]()
+         sut?.validateCache()
+         
+         sut = nil
+         
+         store.completeWithEmptyCache()
+         XCTAssertTrue(recievedResults.isEmpty)
+     }
     
     
     func makeSUT(currentDate: @escaping () -> Date = Date.init) -> (FeedStoreSpy, LocalFeedLoder) {

@@ -47,33 +47,6 @@ class LoadFeedFromCacheUseCaseTest: XCTestCase {
         })
     }
     
-    func test_load_deliversNoCachedImagesOnSevenDaysOldCache() {
-        let feed  = uniqueImageFeed()
-        let fixedCurrentDate = Date()
-        
-        let (store, sut) = makeSUT(currentDate: { fixedCurrentDate })
-        let experationTimeStamp = fixedCurrentDate
-            .minusFeedCacheMaxAge()
-        
-        self.expect(sut, toCompleteWithResult: .success([]), when: {
-            store.completeRetrival(with: feed.localRepresentation, timestamp: experationTimeStamp)
-        })
-    }
-    
-    func test_load_deliversNoCachedImagesOnMoreThanSevenDaysOldCache() {
-        let feed  = uniqueImageFeed()
-        let fixedCurrentDate = Date()
-        
-        let (store, sut) = makeSUT(currentDate: { fixedCurrentDate })
-        let experationTimeStamp = fixedCurrentDate
-            .minusFeedCacheMaxAge()
-            .adding(seconds: -1)
-        
-        self.expect(sut, toCompleteWithResult: .success([]), when: {
-            store.completeRetrival(with: feed.localRepresentation, timestamp: experationTimeStamp)
-        })
-    }
-    
     func test_load_deliversErrorHasNoSideEffects() {
         let (store, sut) = makeSUT()
         sut.load { (_) in

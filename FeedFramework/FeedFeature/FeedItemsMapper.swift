@@ -12,10 +12,6 @@ class FeedItemsMapper {
         public let description: String?
         public let location: String?
         public let image: URL
-        
-        var item: FeedImage {
-            return FeedImage(id: id, description: description, location: location, url: image)
-        }
     }
     
     static func map(_ data: Data, _ response: HTTPURLResponse) throws -> [RemoteFeedItem] {
