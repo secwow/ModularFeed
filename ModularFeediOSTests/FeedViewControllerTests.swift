@@ -103,6 +103,25 @@ class FeedViewControllerTests: XCTestCase {
         XCTAssertEqual(loader.cancelledImageURLs, [image.url, image2.url])
     }
     
+    func test_feedImageView_dismissLoadingIndicatorWhenImageIsLoaded() {
+        let (sut, loader) = makeSUT()
+        let image = makeImage(url: URL(string: "http://url-1.com")!)
+        let image2 = makeImage(url: URL(string: "http://url-2.com")!)
+        
+        sut.loadViewIfNeeded()
+        loader.completeLoad(with: .success([image, image2]), at: 0)
+        let view0 = sut.simulateImageFeedViewVisible(at: 0)
+        let view1 = sut.simulateImageFeedViewVisible(at: 1)
+        XCTAssertEqual(view0?.isShowingImageLoadingIndicator, true)
+        XCTAssertEqual(view1?.isShowingImageLoadingIndicator, true)
+        loader.completeImageLoading(at: 0)
+        XCTAssertEqual(view0?.isShowingImageLoadingIndicator, false)
+        XCTAssertEqual(view1?.isShowingImageLoadingIndicator, true)
+        loader.completeImageLoadingWithError(at: 1)
+        XCTAssertEqual(view0?.isShowingImageLoadingIndicator, false)
+        XCTAssertEqual(view1?.isShowingImageLoadingIndicator, false)
+    }
+    
     func makeSUT(file: StaticString = #file, line: UInt = #line) -> (FeedViewController, LoaderSpy) {
         let loader = LoaderSpy()
         let sut = FeedViewController(loader: loader, imageLoader: loader)
@@ -116,7 +135,7 @@ class FeedViewControllerTests: XCTestCase {
         guard sut.numberRenderedFeedImageViews == feed.count else {
             return XCTFail("Expected \(feed.count) images, got \(sut.numberRenderedFeedImageViews) instead.", file: file, line: line)
         }
-
+        
         feed.enumerated().forEach { index, image in
             assertThat(sut, hasViewConfiguredFor: image, at: index, file: file, line: line)
         }
@@ -150,10 +169,11 @@ class FeedViewControllerTests: XCTestCase {
     }
     
     class LoaderSpy: FeedLoader, FeedImageDataLoader {
-    
-        
+        private var imageRequests = [(url: URL, completion:((FeedImageDataLoader.Result) -> ()))]()
         private var loadCompletions = [(FeedLoader.Result) -> ()]()
-        var loadedImageURLs: [URL] = []
+        var loadedImageURLs: [URL]  {
+            return imageRequests.map({ $0.url })
+        }
         var cancelledImageURLs: [URL] = []
         
         var loadFeedCount: Int {
@@ -168,8 +188,16 @@ class FeedViewControllerTests: XCTestCase {
             self.loadCompletions[index](result)
         }
         
-        func loadImageData(from url: URL) -> FeedImageDataLoaderTask {
-            self.loadedImageURLs.append(url)
+        func completeImageLoading(with imageData: Data = Data(), at index: Int) {
+            imageRequests[index].completion(.success(imageData))
+        }
+        
+        func completeImageLoadingWithError(at index: Int) {
+             imageRequests[index].completion(.failure(anyNSError()))
+        }
+        
+        func loadImageData(from url: URL, completion: @escaping (FeedImageDataLoader.Result) -> ()) -> FeedImageDataLoaderTask {
+            self.imageRequests.append((url, completion))
             return TaskSpy { [weak self] in self?.cancelledImageURLs.append(url) }
         }
     }
