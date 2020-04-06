@@ -205,6 +205,18 @@ class FeedViewControllerTests: XCTestCase {
         XCTAssertEqual(loader.loadedImageURLs,  [image.url, image2.url, image.url, image2.url])
     }
     
+    func test_feedImageView_preloadsImageURLWhenNearVisible() {
+        let (sut, loader) = makeSUT()
+        let image = makeImage()
+        let image2 = makeImage()
+        
+        sut.loadViewIfNeeded()
+        loader.completeLoad(with: .success([image, image2]), at: 0)
+        XCTAssertEqual(loader.loadedImageURLs, [])
+        
+        sut.simulateFeedImageViewNearVisible(at: 0)
+    }
+    
     func makeSUT(file: StaticString = #file, line: UInt = #line) -> (FeedViewController, LoaderSpy) {
         let loader = LoaderSpy()
         let sut = FeedViewController(loader: loader, imageLoader: loader)
@@ -212,7 +224,6 @@ class FeedViewControllerTests: XCTestCase {
         trackForMemoryLeak(object: sut)
         return (sut, loader)
     }
-    
     
     private func assertThat(_ sut: FeedViewController, isRendering feed: [FeedImage], file: StaticString = #file, line: UInt = #line) {
         guard sut.numberRenderedFeedImageViews == feed.count else {
