@@ -1,14 +1,20 @@
 import UIKit
 import FeedFramework
 
+public protocol FeedImageDataLoader {
+    func loadImageData(from url: URL)
+}
+
 public final class FeedViewController: UITableViewController {
     
-    private var loader: FeedLoader?
+    private var feedLoader: FeedLoader?
     private var tableModel: [FeedImage] = []
+    private var imageLoader: FeedImageDataLoader?
     
-    public convenience init(loader: FeedLoader) {
+    public convenience init(loader: FeedLoader, imageLoader: FeedImageDataLoader) {
         self.init()
-        self.loader = loader
+        self.feedLoader = loader
+        self.imageLoader = imageLoader
     }
     
     
@@ -17,22 +23,21 @@ public final class FeedViewController: UITableViewController {
         
         refreshControl = UIRefreshControl()
         refreshControl?.addTarget(self, action: #selector(load), for: .valueChanged)
-        refreshControl?.beginRefreshing()
-        
         load()
     }
     
     
     @objc func load() {
-        self.loader?.load(completion: { [weak self] result in
+        self.refreshControl?.beginRefreshing()
+        self.feedLoader?.load(completion: { [weak self] result in
             switch result {
             case let .success(feed):
-                self?.tableModel = (try? result.get()) ?? []
+                self?.tableModel = feed
                 self?.tableView.reloadData()
-                self?.refreshControl?.endRefreshing()
             case let .failure(error):
                 break
             }
+            self?.refreshControl?.endRefreshing()
             
         })
     }
@@ -48,6 +53,8 @@ public final class FeedViewController: UITableViewController {
         cell.descriptionLabel.text = model.description
         cell.locationLabel.text = model.location
         cell.locationContainer.isHidden = (model.location == nil)
+        
+        imageLoader?.loadImageData(from: model.url)
         return cell
     }
 }
