@@ -214,14 +214,15 @@ class FeedViewControllerTests: XCTestCase {
         loader.completeLoad(with: .success([image, image2]), at: 0)
         XCTAssertEqual(loader.loadedImageURLs, [])
         
-        sut.simulateFeedImageViewNotVisible(at: 0)
+        sut.simulateFeedImageViewNearVisible(at: 0)
         XCTAssertEqual(loader.loadedImageURLs, [image.url])
-        sut.simulateFeedImageViewNotVisible(at: 1)
+        
+        sut.simulateFeedImageViewNearVisible(at: 1)
         XCTAssertEqual(loader.loadedImageURLs, [image.url, image2.url])
     }
     
     func test_feedImageView_cancelImageLoadingWhenViewNotNearVisible() {
-        let (sut, loader) = makeSUT()
+          let (sut, loader) = makeSUT()
         let image = makeImage()
         let image2 = makeImage()
         
@@ -229,7 +230,11 @@ class FeedViewControllerTests: XCTestCase {
         loader.completeLoad(with: .success([image, image2]), at: 0)
         XCTAssertEqual(loader.loadedImageURLs, [])
         
-        sut.simulateFeedImageViewNotNearVisible(at: 0)
+        sut.simulateFeedImageViewNotVisible(at: 0)
+        XCTAssertEqual(loader.cancelledImageURLs, [image.url])
+        
+        sut.simulateFeedImageViewNotVisible(at: 1)
+        XCTAssertEqual(loader.cancelledImageURLs, [image.url, image2.url])
     }
     
     func makeSUT(file: StaticString = #file, line: UInt = #line) -> (FeedViewController, LoaderSpy) {
@@ -280,6 +285,7 @@ class FeedViewControllerTests: XCTestCase {
     class LoaderSpy: FeedLoader, FeedImageDataLoader {
         private var imageRequests = [(url: URL, completion:((FeedImageDataLoader.Result) -> ()))]()
         private var loadCompletions = [(FeedLoader.Result) -> ()]()
+        
         var loadedImageURLs: [URL]  {
             return imageRequests.map({ $0.url })
         }
