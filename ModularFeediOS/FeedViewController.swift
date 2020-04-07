@@ -1,8 +1,6 @@
 import UIKit
 import FeedFramework
 
-
-
 public final class FeedViewController: UITableViewController, UITableViewDataSourcePrefetching {
     
     private var refreshController: FeedRefreshViewController?
@@ -14,7 +12,6 @@ public final class FeedViewController: UITableViewController, UITableViewDataSou
     
     convenience init(refreshController: FeedRefreshViewController) {
         self.init()
-        
         self.refreshController = refreshController
     }
     
