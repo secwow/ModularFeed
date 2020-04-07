@@ -230,10 +230,10 @@ class FeedViewControllerTests: XCTestCase {
         loader.completeLoad(with: .success([image, image2]), at: 0)
         XCTAssertEqual(loader.loadedImageURLs, [])
         
-        sut.simulateFeedImageViewNotVisible(at: 0)
+        sut.simulateFeedImageViewNotNearVisible(at: 0)
         XCTAssertEqual(loader.cancelledImageURLs, [image.url])
         
-        sut.simulateFeedImageViewNotVisible(at: 1)
+        sut.simulateFeedImageViewNotNearVisible(at: 1)
         XCTAssertEqual(loader.cancelledImageURLs, [image.url, image2.url])
     }
     
