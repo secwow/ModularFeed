@@ -1,5 +1,4 @@
 import UIKit
-import FeedFramework
 
 final class FeedImageCellController {
     private let viewModel: FeedImageViewModel<UIImage>
