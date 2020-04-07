@@ -1,4 +1,4 @@
-import Foundation
+import UIKit
 import FeedFramework
 
 public final class FeedUIComposer {
@@ -16,7 +16,8 @@ public final class FeedUIComposer {
     private static func adaptFeedToCellViewControllers(forwarding controller: FeedViewController, loader: FeedImageDataLoader) -> ([FeedImage]) -> Void {
         return { [weak controller] feed in
             controller?.tableModel = feed.map { (model) in
-                FeedImageCellController(with: model, imageLoader: loader)
+                let viewModel = FeedImageViewModel(model: model, imageLoader: loader, imageTransformer: UIImage.init)
+                return FeedImageCellController(viewModel: viewModel)
             }
         }
     }
